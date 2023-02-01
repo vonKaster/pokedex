@@ -6,6 +6,8 @@
           Aún no tienes ningún pokemon
         </h2>
 
+        <h2>{{ coins }}</h2>
+
         <div class=" d-flex flex-wrap" v-if="hasPokemons">
           <v-card 
             v-for="(pokemon, index) in paginatedPokemonsOwned"
@@ -21,7 +23,7 @@
             <v-card-text class="pb-0">Número: {{ pokemon.id }}</v-card-text>
 
             <v-card-actions>
-              <v-btn color="red" text @click="sellPokemon(pokemon.id)"> Vender </v-btn>
+              <v-btn color="red" text @click="sellPokemonOwned(pokemon.id)"> Vender </v-btn>
               <v-btn color="purple" text> Evolucionar </v-btn>
             </v-card-actions>
           </v-card>
@@ -43,16 +45,19 @@ export default {
       pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
       pokemon: {},
       hasPokemons: false,
+      coins: '0',
       itemsPerPage: 14,
       page: 1,
     };
   },
   methods: {
-    sellPokemon(id) {
+    sellPokemonOwned(id) {
       this.pokemonsOwned = this.pokemonsOwned.filter(
         (pokemon) => pokemon.id != id
       );
       localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
+      this.coins += 100;
+      localStorage.setItem("coins", JSON.stringify(this.coins));
     },
   },
   created: function () {
@@ -68,6 +73,13 @@ export default {
         this.hasPokemons = false
       } else {
         this.hasPokemons = true;
+      }
+
+      let coins = JSON.parse(localStorage.getItem("coins"));
+      if (coins === null) {
+        this.coins = 0
+      } else {
+        this.coins = coins;
       }
   },
   computed: {

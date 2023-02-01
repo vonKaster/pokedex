@@ -9,7 +9,7 @@
 
         <v-card-actions>
           <v-btn
-            :disabled="hasSaved === true"
+            :disabled="hasSaved === true || hasSelled === true"
             color="green"
             @click="
               guardarPokemon();
@@ -19,7 +19,7 @@
           >
             Guardar
           </v-btn>
-          <v-btn color="red" text> Vender </v-btn>
+          <v-btn color="red" text :disabled="hasSelled === true" @click="sellPokemonNotOwned()"> Vender </v-btn>
         </v-card-actions>
       </div>
     </v-card>
@@ -47,6 +47,8 @@ export default {
       OpenButtonInfo: "Abrir",
       OpenButtonInfoClicked: false,
       hasSaved: false,
+      coins: 0,
+      hasSelled: false,
       counter: "5",
       hasPokemons: false,
       pokemonsOwned: [
@@ -74,6 +76,7 @@ export default {
           this.pokemon.name = response.data.name;
           this.pokemon.id = response.data.id;
           this.hasSaved = false;
+          this.hasSelled = false;
           this.OpenButtonInfoClicked = true;
         })
         .catch((error) => {
@@ -116,6 +119,12 @@ export default {
     hasClicked() {
       this.OpenButtonInfoClicked = true;
     },
+    sellPokemonNotOwned(){
+      let coins = JSON.parse(localStorage.getItem("coins"));
+      coins += 100;
+      this.hasSelled = true;
+      localStorage.setItem("coins", JSON.stringify(coins));
+    }
   },
   created: function () {
     let pokemonsOwned = JSON.parse(localStorage.getItem("pokemonsOwned"));
