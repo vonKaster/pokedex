@@ -8,7 +8,7 @@
 
         <div class=" d-flex flex-wrap" v-if="hasPokemons">
           <v-card 
-            v-for="(pokemon, index) in pokemonsOwned"
+            v-for="(pokemon, index) in paginatedPokemonsOwned"
             :key="index"
             width="230px"
             class="ms-4 mb-4 .d-inline-block"
@@ -21,11 +21,15 @@
             <v-card-text class="pb-0">Número: {{ pokemon.id }}</v-card-text>
 
             <v-card-actions>
-              <v-btn color="red" text> Vender </v-btn>
+              <v-btn color="red" text @click="sellPokemon(pokemon.id)"> Vender </v-btn>
               <v-btn color="purple" text> Evolucionar </v-btn>
             </v-card-actions>
           </v-card>
         </div>
+        <v-pagination
+            v-model="page"
+          :length="pages"
+    ></v-pagination>
       </div>
     </h1>
   </div>
@@ -36,9 +40,20 @@ export default {
   name: "coleccion",
   data() {
     return {
+      pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
       pokemon: {},
       hasPokemons: false,
+      itemsPerPage: 14,
+      page: 1,
     };
+  },
+  methods: {
+    sellPokemon(id) {
+      this.pokemonsOwned = this.pokemonsOwned.filter(
+        (pokemon) => pokemon.id != id
+      );
+      localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
+    },
   },
   created: function () {
     let pokemonsOwned = JSON.parse(localStorage.getItem("pokemonsOwned"));
@@ -55,5 +70,15 @@ export default {
         this.hasPokemons = true;
       }
   },
+  computed: {
+    pages() {
+      return Math.ceil(this.pokemonsOwned.length / this.itemsPerPage);
+    },
+    paginatedPokemonsOwned() {
+      let start = (this.page - 1) * this.itemsPerPage;
+      let end = start + this.itemsPerPage;
+      return this.pokemonsOwned.slice(start, end);
+    }
+  }
 };
 </script>
