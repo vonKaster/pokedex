@@ -6,8 +6,6 @@
           Aún no tienes ningún pokemon
         </h2>
 
-        <h2>{{ coins }}</h2>
-
         <div class=" d-flex flex-wrap" v-if="hasPokemons">
           <v-card 
             v-for="(pokemon, index) in paginatedPokemonsOwned"
@@ -38,35 +36,31 @@
 </template>
 
 <script>
+import store from '@/store/index.js'
+import { mapState, mapActions } from 'vuex';
 export default {
   name: "coleccion",
+
+  computed: {
+    ...mapState(['pokemonsOwned', 'coins'])
+  },
+
   data() {
     return {
-      pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
       pokemon: {},
       hasPokemons: false,
-      coins: '0',
       itemsPerPage: 14,
       page: 1,
     };
   },
   methods: {
+    ...mapActions('removePokemon'),
     sellPokemonOwned(id) {
-      this.pokemonsOwned = this.pokemonsOwned.filter(
-        (pokemon) => pokemon.id != id
-      );
-      localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
-      this.coins += 100;
-      localStorage.setItem("coins", JSON.stringify(this.coins));
+      this.$store.dispatch('removePokemon', id);
+      this.$store.commit('updateCoins', this.coins + 100);
     },
   },
   created: function () {
-    let pokemonsOwned = JSON.parse(localStorage.getItem("pokemonsOwned"));
-    if (pokemonsOwned === null) {
-      this.pokemonsOwned = [];
-    } else {
-      this.pokemonsOwned = pokemonsOwned;
-    }
 
     let hasPokemons = JSON.parse(localStorage.getItem("pokemonsOwned"));
       if (hasPokemons === null) {
@@ -74,15 +68,9 @@ export default {
       } else {
         this.hasPokemons = true;
       }
-
-      let coins = JSON.parse(localStorage.getItem("coins"));
-      if (coins === null) {
-        this.coins = 0
-      } else {
-        this.coins = coins;
-      }
   },
   computed: {
+    ...mapState(['pokemonsOwned', 'coins']),
     pages() {
       return Math.ceil(this.pokemonsOwned.length / this.itemsPerPage);
     },
@@ -90,6 +78,12 @@ export default {
       let start = (this.page - 1) * this.itemsPerPage;
       let end = start + this.itemsPerPage;
       return this.pokemonsOwned.slice(start, end);
+    },
+    incrementCoins() {
+      store.commit('incrementCoins');
+    },
+    decrementCoins() {
+      store.commit('decrementCoins');
     }
   }
 };

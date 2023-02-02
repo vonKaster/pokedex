@@ -18,22 +18,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 export default {
   name: "navBar",
 
   data(){
     return {
-      coins: 0,
     }
   },
 
-  created: function () {
-    let coins = JSON.parse(localStorage.getItem("coins"));
-    if (coins === null) {
-      this.coins = 0;
-    } else {
-      this.coins = coins;
-    }
+  computed: {
+    ...mapState(['coins'])
   },
+
 };
 </script>

@@ -6,7 +6,7 @@
     import Pokedex from '../components/Pokedex'
   
     export default {
-      name: 'Home',
+      name: 'PokedexView',
   
       components: {
         Pokedex,

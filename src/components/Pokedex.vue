@@ -3,16 +3,16 @@
     <v-card class="mx-auto" max-width="300px">
       <v-img text-center max-width="300" class="" :src="pokemon.img"> </v-img>
       
-      <div v-if="OpenButtonInfoClicked === true">
+      <div v-if="OpenButtonClicked === true">
         <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
-        <v-card-text class="pb-0">Número: {{ pokemon.id }} </v-card-text>
+        <v-card-text class="pb-0 text-left">Número: {{ pokemon.id }} </v-card-text>
 
         <v-card-actions>
           <v-btn
             :disabled="hasSaved === true || hasSelled === true"
             color="green"
             @click="
-              guardarPokemon();
+              savePokemon();
               hasClicked();
             "
             text
@@ -24,7 +24,7 @@
       </div>
     </v-card>
     <v-btn
-      :disabled="disabled"
+      :disabled="OpenButtonDisabled"
       @click="
         obtenerPokemon(getRandomInt());
         countDown();
@@ -36,28 +36,22 @@
 </template>
 
 <script>
+import store from '@/store/index.js'
 import axios from "axios";
+import { mapState, mapActions } from 'vuex';
 export default {
   name: "Pokedex",
 
   data() {
     return {
-      disabled: false,
+      OpenButtonDisabled: false,
       timeout: null,
       OpenButtonInfo: "Abrir",
-      OpenButtonInfoClicked: false,
+      OpenButtonClicked: false,
       hasSaved: false,
-      coins: 0,
       hasSelled: false,
       counter: "5",
       hasPokemons: false,
-      pokemonsOwned: [
-        {
-          id: "",
-          name: "",
-          img: "",
-        },
-      ],
       pokemon: {
         id: " ",
         name: "",
@@ -66,7 +60,12 @@ export default {
     };
   },
 
+  computed: {
+    ...mapState(['pokemonsOwned', 'coins'])
+  },
+
   methods: {
+    ...mapActions('addPokemon', 'removePokemon'),
     obtenerPokemon(id) {
       axios
         .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -77,7 +76,7 @@ export default {
           this.pokemon.id = response.data.id;
           this.hasSaved = false;
           this.hasSelled = false;
-          this.OpenButtonInfoClicked = true;
+          this.OpenButtonClicked = true;
         })
         .catch((error) => {
           this.pokemon.name = "No existe";
@@ -88,50 +87,43 @@ export default {
     },
     countDown() {
       if (this.counter >= 0) {
-        this.disabled = true;
+        this.OpenButtonDisabled= true;
         this.OpenButtonInfo = this.counter;
         this.timeout = setTimeout(() => {
-          this.disabled = false;
+          this.OpenButtonDisabled = false;
           this.counter--;
           this.countDown();
         }, 1000);
       } else {
-        this.disabled = false;
+        this.OpenButtonDisabled = false;
         this.counter = 5;
         this.OpenButtonInfo = "Abrir";
       }
     },
     delay() {
-      this.disabled = true;
+      this.OpenButtonDisabled = true;
       this.countDown();
-      this.disabled = false;
+      this.OpenButtonDisabled = false;
     },
-    guardarPokemon() {
-      this.pokemonsOwned.push({
+    async savePokemon() {
+      await this.$store.dispatch("addPokemon", {
         id: this.pokemon.id,
         name: this.pokemon.name,
         img: this.pokemon.img,
       });
-      localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
       this.hasSaved = true;
       console.log(this.pokemonsOwned);
     },
     hasClicked() {
-      this.OpenButtonInfoClicked = true;
+      this.OpenButtonClicked = true;
     },
-    sellPokemonNotOwned(){
-      let coins = JSON.parse(localStorage.getItem("coins"));
-      coins += 100;
+    async sellPokemonNotOwned(){
+      this.$store.dispatch('removePokemon', this.pokemon.id);
+      this.incrementCoins();
       this.hasSelled = true;
-      localStorage.setItem("coins", JSON.stringify(coins));
-    }
-  },
-  created: function () {
-    let pokemonsOwned = JSON.parse(localStorage.getItem("pokemonsOwned"));
-    if (pokemonsOwned === null) {
-      this.pokemonsOwned = [];
-    } else {
-      this.pokemonsOwned = pokemonsOwned;
+    },
+    incrementCoins() {
+      store.commit('incrementCoins');
     }
   },
 };
