@@ -10,7 +10,7 @@
       <v-toolbar-title>Pokemonedas: {{ coins }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn text :to="{ name: 'home' }">Abrir cajas</v-btn>
+        <v-btn text :to="{ name: 'home' }">Abrir Pokebolas</v-btn>
         <v-btn text :to="{ name: 'coleccion' }">Mi colección</v-btn>
       </v-toolbar-items>
     </v-toolbar>

@@ -14,7 +14,7 @@
             class="ms-4 mb-4 .d-inline-block"
           >
             <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
-            <router-link :to="'/pokemon/' + pokemon.id">
+            <router-link :to="`/pokemon/${pokemon.id}`">
               <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
             </router-link>
 
@@ -37,8 +37,12 @@
 <script>
 import store from "@/store/index.js";
 import { mapState } from "vuex";
+import pokemonPage from "./pokemonPage.vue";
 export default {
   name: "coleccion",
+  components: {
+    pokemonPage
+  },
 
   computed: {
     ...mapState(["pokemonsOwned", "coins"]),
@@ -53,13 +57,13 @@ export default {
     };
   },
   methods: {
-    incrementCoins() {
-      store.commit("incrementCoins");
+    incrementCoins(amount) {
+      store.commit("incrementCoins", amount);
     },
 
     sellPokemonOwned(id) {
       this.$store.dispatch("removePokemon", id);
-      this.incrementCoins();
+      this.incrementCoins(20);
     },
   },
   created: function () {

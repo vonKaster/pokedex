@@ -19,7 +19,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../components/MiColeccion.vue')
   },
   {
-    path: '/coleccion/pokemon/:id',
+    path: '/pokemon/:id',
     name: 'pokemonPage',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

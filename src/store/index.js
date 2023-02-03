@@ -17,12 +17,12 @@ export default new Vuex.Store({
       state.timer = timer
       localStorage.setItem("timer", timer)
     },
-    incrementCoins(state) {
-      state.coins += 20;
+    incrementCoins(state, amount) {
+      state.coins += amount;
       localStorage.setItem("coins", state.coins);
     },
-    decrementCoins(state) {
-      state.coins -= 20;
+    decrementCoins(state, amount) {
+      state.coins -= amount;
       localStorage.setItem("coins", state.coins);
     },
     updatePokemonsOwned(state, pokemons) {

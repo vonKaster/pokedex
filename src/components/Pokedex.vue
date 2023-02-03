@@ -18,7 +18,7 @@
             "
             text
           >
-            Guardar
+            Atrapar
           </v-btn>
           <v-btn
             color="red"
@@ -41,6 +41,25 @@
       
       >{{ OpenButtonInfo }}</v-btn
     >
+
+    <v-snackbar
+      v-model="snackbar"
+      :multi-line="multiLine"
+    >
+      {{ textSnackBar }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="red"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
+
   </div>
 </template>
 
@@ -60,6 +79,10 @@ export default {
       hasSelled: true,
       counter: "5",
       hasPokemons: false,
+      multiLine: true,
+      snackbar: false,
+      hasPaided: false,
+      textSnackBar: ``,
       pokemon: {
         id: "1",
         name: "¡Abre una pokebola!",
@@ -80,40 +103,55 @@ export default {
     ...mapActions(['setTimer']),
 
     startTimer() {
-      this.OpenButtonDisabled = true;
-      let countdown = setInterval(() => {
-        this.setTimer(this.timer - 1)
-        this.OpenButtonInfo = this.timer;
-        console.log(this.timer);
-        if (this.OpenButtonInfo === 0) {
-          clearInterval(countdown);
-          this.setTimer(30);
-          this.OpenButtonDisabled = false;
-          this.OpenButtonInfo = "Abrir";
-        }
-      }, 1000)
 
-      this.$once("hook:beforeDestroy", () => {
-        clearInterval(countdown);
-        console.log("beforeDestroy");
-      });
+      if(this.hasPaided === true) {
+        this.OpenButtonDisabled = true;
+        let countdown = setInterval(() => {
+          this.setTimer(this.timer - 1)
+          this.OpenButtonInfo = this.timer;
+          console.log(this.timer);
+          if (this.OpenButtonInfo === 0) {
+            clearInterval(countdown);
+            this.setTimer(30);
+            this.OpenButtonDisabled = false;
+            this.OpenButtonInfo = "Abrir";
+          }
+        }, 1000)
+  
+        this.$once("hook:beforeDestroy", () => {
+          clearInterval(countdown);
+          console.log("beforeDestroy");
+        });
+      }
+
     },
 
     obtenerPokemon(id) {
-      axios
-        .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
-        .then((response) => {
-          console.log(response);
-          this.pokemon.img = response.data.sprites.front_default;
-          this.pokemon.name = response.data.name;
-          this.pokemon.id = response.data.id;
-          this.saveLastPokemonRolled()
-          this.hasSaved = false;
-          this.hasSelled = false;
-        })
-        .catch((error) => {
-          this.pokemon.name = "No existe";
-        });
+      if (this.coins >= 10) {
+        this.decrementCoins(10);
+        this.hasPaided = true;
+      }
+      if (this.hasPaided === true){
+        axios
+          .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
+          .then((response) => {
+            console.log(response);
+            this.pokemon.img = response.data.sprites.front_default;
+            this.pokemon.name = response.data.name;
+            this.pokemon.id = response.data.id;
+            this.saveLastPokemonRolled()
+            this.hasSaved = false;
+            this.hasSelled = false;
+          })
+          .catch((error) => {
+            this.pokemon.name = "No existe";
+          });
+      } else {
+        this.textSnackBar = "¡No tienes suficientes monedas!"
+        this.snackbar = true;
+        this.hasPaided = false;
+      }
+      
     },
     getRandomInt() {
       return Math.floor(Math.random() * 906);
@@ -129,11 +167,14 @@ export default {
     },
     async sellPokemonNotOwned() {
       this.$store.dispatch("removePokemon", this.pokemon.id);
-      this.incrementCoins();
+      this.incrementCoins(20);
       this.hasSelled = true;
     },
-    incrementCoins() {
-      store.commit("incrementCoins");
+    incrementCoins(amount) {
+      store.commit("incrementCoins", amount);
+    },
+    decrementCoins(amount) {
+      store.commit("decrementCoins", amount);
     },
     saveLastPokemonRolled(){
       store.commit("updateLastPokemonRolled", {
