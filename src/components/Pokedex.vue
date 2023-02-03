@@ -61,9 +61,9 @@ export default {
       counter: "5",
       hasPokemons: false,
       pokemon: {
-        id: "",
-        name: "",
-        img: "",
+        id: "1",
+        name: "¡Abre una pokebola!",
+        img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
       },
     };
   },
