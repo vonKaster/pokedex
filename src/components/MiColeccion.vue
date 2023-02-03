@@ -6,43 +6,40 @@
           Aún no tienes ningún pokemon
         </h2>
 
-        <div class=" d-flex flex-wrap" v-if="hasPokemons">
-          <v-card 
+        <div class="d-flex flex-wrap" v-if="hasPokemons">
+          <v-card
             v-for="(pokemon, index) in paginatedPokemonsOwned"
             :key="index"
             width="230px"
             class="ms-4 mb-4 .d-inline-block"
-
           >
-            <v-img text-center max-width="300" :src="pokemon.img">
-            </v-img>
+            <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
             <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
 
             <v-card-text class="pb-0">Número: {{ pokemon.id }}</v-card-text>
 
             <v-card-actions>
-              <v-btn color="red" text @click="sellPokemonOwned(pokemon.id)"> Vender </v-btn>
+              <v-btn color="red" text @click="sellPokemonOwned(pokemon.id)">
+                Vender
+              </v-btn>
               <v-btn color="purple" text> Evolucionar </v-btn>
             </v-card-actions>
           </v-card>
         </div>
-        <v-pagination
-            v-model="page"
-          :length="pages"
-    ></v-pagination>
+        <v-pagination v-model="page" :length="pages"></v-pagination>
       </div>
     </h1>
   </div>
 </template>
 
 <script>
-import store from '@/store/index.js'
-import { mapState, mapActions } from 'vuex';
+import store from "@/store/index.js";
+import { mapState } from "vuex";
 export default {
   name: "coleccion",
 
   computed: {
-    ...mapState(['pokemonsOwned', 'coins'])
+    ...mapState(["pokemonsOwned", "coins"]),
   },
 
   data() {
@@ -54,23 +51,25 @@ export default {
     };
   },
   methods: {
-    ...mapActions('removePokemon'),
+    incrementCoins() {
+      store.commit("incrementCoins");
+    },
+
     sellPokemonOwned(id) {
-      this.$store.dispatch('removePokemon', id);
-      this.$store.commit('updateCoins', this.coins + 100);
+      this.$store.dispatch("removePokemon", id);
+      this.incrementCoins();
     },
   },
   created: function () {
-
     let hasPokemons = JSON.parse(localStorage.getItem("pokemonsOwned"));
-      if (hasPokemons === null) {
-        this.hasPokemons = false
-      } else {
-        this.hasPokemons = true;
-      }
+    if (hasPokemons === null) {
+      this.hasPokemons = false;
+    } else {
+      this.hasPokemons = true;
+    }
   },
   computed: {
-    ...mapState(['pokemonsOwned', 'coins']),
+    ...mapState(["pokemonsOwned", "coins"]),
     pages() {
       return Math.ceil(this.pokemonsOwned.length / this.itemsPerPage);
     },
@@ -79,12 +78,6 @@ export default {
       let end = start + this.itemsPerPage;
       return this.pokemonsOwned.slice(start, end);
     },
-    incrementCoins() {
-      store.commit('incrementCoins');
-    },
-    decrementCoins() {
-      store.commit('decrementCoins');
-    }
-  }
+  },
 };
 </script>
