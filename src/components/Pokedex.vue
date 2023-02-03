@@ -3,7 +3,7 @@
     <v-card class="mx-auto" max-width="300px">
       <v-img text-center max-width="300" class="" :src="pokemon.img"> </v-img>
 
-      <div v-if="OpenButtonClicked === true">
+      <div>
         <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
         <v-card-text class="pb-0 text-left"
           >Número: {{ pokemon.id }}
@@ -15,7 +15,6 @@
             color="green"
             @click="
               savePokemon();
-              hasClicked();
             "
             text
           >
@@ -57,15 +56,14 @@ export default {
       OpenButtonDisabled: false,
       timeout: null,
       OpenButtonInfo: "Abrir",
-      OpenButtonClicked: false,
-      hasSaved: false,
-      hasSelled: false,
+      hasSaved: true,
+      hasSelled: true,
       counter: "5",
       hasPokemons: false,
       pokemon: {
-        id: " ",
+        id: "",
         name: "",
-        img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
+        img: "",
       },
     };
   },
@@ -81,13 +79,12 @@ export default {
   methods: {
     ...mapActions(['setTimer']),
 
-    async startTimer() {
+    startTimer() {
+      this.OpenButtonDisabled = true;
       let countdown = setInterval(() => {
-        this.OpenButtonInfo = this.timer;
-        this.OpenButtonDisabled = true;
         this.setTimer(this.timer - 1)
-        console.log(this.timer);
-        if (this.timer === 0) {
+        this.OpenButtonInfo = this.timer;
+        if (this.OpenButtonInfo === 0) {
           clearInterval(countdown);
           this.setTimer(30);
           this.OpenButtonDisabled = false;
@@ -108,9 +105,9 @@ export default {
           this.pokemon.img = response.data.sprites.front_default;
           this.pokemon.name = response.data.name;
           this.pokemon.id = response.data.id;
+          this.saveLastPokemonRolled()
           this.hasSaved = false;
           this.hasSelled = false;
-          this.OpenButtonClicked = true;
         })
         .catch((error) => {
           this.pokemon.name = "No existe";
@@ -128,9 +125,6 @@ export default {
       this.hasSaved = true;
       console.log(this.pokemonsOwned);
     },
-    hasClicked() {
-      this.OpenButtonClicked = true;
-    },
     async sellPokemonNotOwned() {
       this.$store.dispatch("removePokemon", this.pokemon.id);
       this.incrementCoins();
@@ -139,6 +133,46 @@ export default {
     incrementCoins() {
       store.commit("incrementCoins");
     },
+    saveLastPokemonRolled(){
+      store.commit("updateLastPokemonRolled", {
+        id: this.pokemon.id,
+        name: this.pokemon.name,
+        img: this.pokemon.img,
+      });
+    }
   },
+
+  mounted(){
+    if (this.timer <= 29){
+      this.OpenButtonDisabled = true;
+    let countdown = setInterval(() => {
+        this.setTimer(this.timer - 1)
+        this.OpenButtonInfo = this.timer;
+        if (this.OpenButtonInfo === 0) {
+          clearInterval(countdown);
+          this.setTimer(30);
+          this.OpenButtonDisabled = false;
+          this.OpenButtonInfo = "Abrir";
+        }
+      }, 1000)
+    }
+
+    let ls = JSON.parse(localStorage.getItem("lastPokemon"));
+
+    if(ls === null || ls === undefined) {
+      let pokemon = {
+        id: 1,
+        name: "¡Abre una pokebola!",
+        img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png"
+      }
+      localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
+    } else {
+      this.pokemon.id = ls.id;
+      this.pokemon.name = ls.name;
+      this.pokemon.img = ls.img;
+    }
+
+  },
+
 };
 </script>

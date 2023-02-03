@@ -8,6 +8,7 @@ export default new Vuex.Store({
   state: {
     coins: Number(localStorage.getItem("coins")) || 0,
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
+    lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
     timer: JSON.parse(localStorage.getItem("timer")) || 30,
   },
   getters: {},
@@ -31,6 +32,11 @@ export default new Vuex.Store({
     updateCoins(state, coins) {
       state.coins = coins;
       localStorage.setItem("coins", JSON.stringify(coins));
+    },
+    updateLastPokemonRolled(state, lastPokemonRolled) {
+      state.lastPokemonRolled = lastPokemonRolled;
+      localStorage.clear("lastPokemon");
+      localStorage.setItem("lastPokemon", JSON.stringify(lastPokemonRolled));
     },
   },
   modules: {},
@@ -56,7 +62,7 @@ export default new Vuex.Store({
     },
     setTimer({ commit }, timer) {
       commit("setTimer", timer)
-    }
+    },
   },
   getters: {
     getTimer(state) {
