@@ -84,6 +84,7 @@ export default {
       let countdown = setInterval(() => {
         this.setTimer(this.timer - 1)
         this.OpenButtonInfo = this.timer;
+        console.log(this.timer);
         if (this.OpenButtonInfo === 0) {
           clearInterval(countdown);
           this.setTimer(30);
@@ -94,6 +95,7 @@ export default {
 
       this.$once("hook:beforeDestroy", () => {
         clearInterval(countdown);
+        console.log("beforeDestroy");
       });
     },
 
@@ -144,17 +146,7 @@ export default {
 
   mounted(){
     if (this.timer <= 29){
-      this.OpenButtonDisabled = true;
-    let countdown = setInterval(() => {
-        this.setTimer(this.timer - 1)
-        this.OpenButtonInfo = this.timer;
-        if (this.OpenButtonInfo === 0) {
-          clearInterval(countdown);
-          this.setTimer(30);
-          this.OpenButtonDisabled = false;
-          this.OpenButtonInfo = "Abrir";
-        }
-      }, 1000)
+      this.startTimer();
     }
 
     let ls = JSON.parse(localStorage.getItem("lastPokemon"));
