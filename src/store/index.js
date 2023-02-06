@@ -14,8 +14,8 @@ export default new Vuex.Store({
   getters: {},
   mutations: {
     setTimer(state, timer) {
-      state.timer = timer
-      localStorage.setItem("timer", timer)
+      state.timer = timer;
+      localStorage.setItem("timer", timer);
     },
     incrementCoins(state, amount) {
       state.coins += amount;
@@ -56,17 +56,23 @@ export default new Vuex.Store({
       const pokemons = [...this.state.pokemonsOwned, pokemon];
       commit("updatePokemonsOwned", pokemons);
     },
-    removePokemon({ commit }, id) {
-      const pokemons = this.state.pokemonsOwned.filter((p) => p.id !== id);
+    removePokemon({ commit }, uid) {
+      const pokemons = this.state.pokemonsOwned.filter((p) => p.uid !== uid);
+      commit("updatePokemonsOwned", pokemons);
+    },
+    editPokemon({ commit }, { uid, name }) {
+      const pokemons = [...this.state.pokemonsOwned];
+      const index = pokemons.findIndex((p) => p.uid === uid);
+      pokemons[index] = { ...pokemons[index], name };
       commit("updatePokemonsOwned", pokemons);
     },
     setTimer({ commit }, timer) {
-      commit("setTimer", timer)
+      commit("setTimer", timer);
     },
   },
   getters: {
     getTimer(state) {
-      return state.timer
+      return state.timer;
     },
-  }
+  },
 });

@@ -1,7 +1,6 @@
 <template>
   <v-app>
     <navBar></navBar>
-    <PokedexView/>
     <v-main>
       <router-view/>
     </v-main>

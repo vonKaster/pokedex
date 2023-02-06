@@ -20,7 +20,7 @@ export default {
     };
   },
   created () {
-  this.pokemon = this.pokemonsOwned.find((pokemon) => pokemon.id === parseInt(this.$route.params.id));
+  this.pokemon = this.pokemonsOwned.find((pokemon) => pokemon.uid === parseInt(this.$route.params.uid));
   console.log(this.pokemonsOwned);
   },
 };

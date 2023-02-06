@@ -5,7 +5,7 @@
 
       <div>
         <v-card-title>{{ pokemon.type.toUpperCase() }}</v-card-title>
-        <v-card-text class="pb-0 text-left"
+        <v-card-text class="pb-0 text-left ms-4"
           >Número: {{ pokemon.id }}
         </v-card-text>
 
@@ -84,7 +84,9 @@ export default {
       hasPaided: false,
       textSnackBar: ``,
       pokemon: {
-        id: "1",
+        uid: 1,
+        id: 1,
+        name: 'Sin nombre',
         type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
       },
@@ -109,7 +111,6 @@ export default {
         let countdown = setInterval(() => {
           this.setTimer(this.timer - 1)
           this.OpenButtonInfo = this.timer;
-          console.log(this.timer);
           if (this.OpenButtonInfo === 0) {
             clearInterval(countdown);
             this.setTimer(30);
@@ -121,7 +122,6 @@ export default {
   
         this.$once("hook:beforeDestroy", () => {
           clearInterval(countdown);
-          console.log("beforeDestroy");
         });
       }
 
@@ -140,6 +140,7 @@ export default {
             this.pokemon.img = response.data.sprites.front_default;
             this.pokemon.type = response.data.name;
             this.pokemon.id = response.data.id;
+            this.pokemon.name = 'Sin nombre';
             this.saveLastPokemonRolled()
             this.hasSaved = false;
             this.hasSelled = false;
@@ -159,12 +160,15 @@ export default {
     },
     async savePokemon() {
       await this.$store.dispatch("addPokemon", {
+        uid: this.pokemonsOwned.length + 1,
         id: this.pokemon.id,
+        name: this.pokemon.name,
         type: this.pokemon.type,
         img: this.pokemon.img,
       });
       this.hasSaved = true;
-      console.log(this.pokemonsOwned);
+      this.snackbar = true;
+      this.textSnackBar = "Pokemon guardado exitosamente";
     },
     async sellPokemonNotOwned() {
       this.$store.dispatch("removePokemon", this.pokemon.id);
@@ -192,7 +196,6 @@ export default {
         let countdown = setInterval(() => {
           this.setTimer(this.timer - 1)
           this.OpenButtonInfo = this.timer;
-          console.log(this.timer);
           if (this.OpenButtonInfo === 0) {
             clearInterval(countdown);
             this.setTimer(30);
@@ -204,7 +207,6 @@ export default {
   
         this.$once("hook:beforeDestroy", () => {
           clearInterval(countdown);
-          console.log("beforeDestroy");
         });
     }
 
@@ -219,6 +221,7 @@ export default {
       localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
     } else {
       this.pokemon.id = ls.id;
+      this.pokemon.name = ls.name;
       this.pokemon.type = ls.type;
       this.pokemon.img = ls.img;
     }
