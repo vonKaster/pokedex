@@ -1,20 +1,27 @@
 <template>
-    <div>
-      <h2>{{ pokemon.name.toUpperCase() }}</h2>
-      <img :src="pokemon.img" />
-      <p>Número: {{ pokemon.id }}</p>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    name: "PokemonPage",
-    props: ["id"],
-    computed: {
-      pokemon() {
-        return this.$store.state.pokemonsOwned.find(p => p.id === this.id);
-      },
-    },
-  };
-  </script>
-  
+  <div class="pokemon-page">
+    <h2>{{ pokemon.type.toUpperCase() }}</h2>
+    <img :src="pokemon.img" />
+    <p>Número: {{ pokemon.id }}</p>
+  </div>
+</template>
+
+<script>
+import { mapState } from "vuex";
+
+export default {
+  name: "pokemonPage",
+  computed: {
+    ...mapState(["pokemonsOwned"]),
+  },
+  data() {
+    return {
+      pokemon: null,
+    };
+  },
+  created () {
+  this.pokemon = this.pokemonsOwned.find((pokemon) => pokemon.id === parseInt(this.$route.params.id));
+  console.log(this.pokemonsOwned);
+  },
+};
+</script>

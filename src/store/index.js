@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   data: {},
   state: {
-    coins: Number(localStorage.getItem("coins")) || 0,
+    coins: Number(localStorage.getItem("coins")) || 40,
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
     lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
     timer: JSON.parse(localStorage.getItem("timer")) || 30,
@@ -67,6 +67,6 @@ export default new Vuex.Store({
   getters: {
     getTimer(state) {
       return state.timer
-    }
+    },
   }
 });

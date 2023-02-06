@@ -4,7 +4,7 @@
       <v-img text-center max-width="300" class="" :src="pokemon.img"> </v-img>
 
       <div>
-        <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
+        <v-card-title>{{ pokemon.type.toUpperCase() }}</v-card-title>
         <v-card-text class="pb-0 text-left"
           >Número: {{ pokemon.id }}
         </v-card-text>
@@ -66,7 +66,7 @@
 <script>
 import store from "@/store/index.js";
 import axios from "axios";
-import { mapState, mapActions, mapGetters } from "vuex";
+import { mapState, mapActions } from "vuex";
 export default {
   name: "Pokedex",
 
@@ -85,7 +85,7 @@ export default {
       textSnackBar: ``,
       pokemon: {
         id: "1",
-        name: "¡Abre una pokebola!",
+        type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
       },
     };
@@ -115,6 +115,7 @@ export default {
             this.setTimer(30);
             this.OpenButtonDisabled = false;
             this.OpenButtonInfo = "Abrir";
+            this.hasPaided = false;
           }
         }, 1000)
   
@@ -137,14 +138,14 @@ export default {
           .then((response) => {
             console.log(response);
             this.pokemon.img = response.data.sprites.front_default;
-            this.pokemon.name = response.data.name;
+            this.pokemon.type = response.data.name;
             this.pokemon.id = response.data.id;
             this.saveLastPokemonRolled()
             this.hasSaved = false;
             this.hasSelled = false;
           })
           .catch((error) => {
-            this.pokemon.name = "No existe";
+            this.pokemon.type = "No existe";
           });
       } else {
         this.textSnackBar = "¡No tienes suficientes monedas!"
@@ -159,7 +160,7 @@ export default {
     async savePokemon() {
       await this.$store.dispatch("addPokemon", {
         id: this.pokemon.id,
-        name: this.pokemon.name,
+        type: this.pokemon.type,
         img: this.pokemon.img,
       });
       this.hasSaved = true;
@@ -179,7 +180,7 @@ export default {
     saveLastPokemonRolled(){
       store.commit("updateLastPokemonRolled", {
         id: this.pokemon.id,
-        name: this.pokemon.name,
+        type: this.pokemon.type,
         img: this.pokemon.img,
       });
     }
@@ -187,7 +188,24 @@ export default {
 
   mounted(){
     if (this.timer <= 29){
-      this.startTimer();
+      this.OpenButtonDisabled = true;
+        let countdown = setInterval(() => {
+          this.setTimer(this.timer - 1)
+          this.OpenButtonInfo = this.timer;
+          console.log(this.timer);
+          if (this.OpenButtonInfo === 0) {
+            clearInterval(countdown);
+            this.setTimer(30);
+            this.OpenButtonDisabled = false;
+            this.OpenButtonInfo = "Abrir";
+            this.hasPaided = false;
+          }
+        }, 1000)
+  
+        this.$once("hook:beforeDestroy", () => {
+          clearInterval(countdown);
+          console.log("beforeDestroy");
+        });
     }
 
     let ls = JSON.parse(localStorage.getItem("lastPokemon"));
@@ -195,13 +213,13 @@ export default {
     if(ls === null || ls === undefined) {
       let pokemon = {
         id: 1,
-        name: "¡Abre una pokebola!",
+        type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png"
       }
       localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
     } else {
       this.pokemon.id = ls.id;
-      this.pokemon.name = ls.name;
+      this.pokemon.type = ls.type;
       this.pokemon.img = ls.img;
     }
 

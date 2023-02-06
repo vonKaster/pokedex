@@ -15,7 +15,7 @@
           >
             <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
             <router-link :to="`/pokemon/${pokemon.id}`">
-              <v-card-title>{{ pokemon.name.toUpperCase() }}</v-card-title>
+              <v-card-title>{{ pokemon.type.toUpperCase() }}</v-card-title>
             </router-link>
 
             <v-card-text class="pb-0">Número: {{ pokemon.id }}</v-card-text>
