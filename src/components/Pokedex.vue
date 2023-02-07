@@ -88,6 +88,8 @@ export default {
         name: 'Sin nombre',
         type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
+        stats: [],
+        abilities: [],
       },
     };
   },
@@ -139,6 +141,8 @@ export default {
             this.pokemon.img = response.data.sprites.front_default;
             this.pokemon.type = response.data.name;
             this.pokemon.id = response.data.id;
+            this.pokemon.stats = response.data.stats;
+            this.pokemon.abilities = response.data.abilities;
             this.pokemon.name = 'Sin nombre';
             this.saveLastPokemonRolled()
             this.hasSaved = false;
@@ -162,6 +166,8 @@ export default {
         uid: this.pokemonsOwned.length + 1,
         id: this.pokemon.id,
         name: this.pokemon.name,
+        stats: this.pokemon.stats,
+        abilities: this.pokemon.abilities,
         type: this.pokemon.type,
         img: this.pokemon.img,
       });
@@ -223,6 +229,8 @@ export default {
       this.pokemon.name = ls.name;
       this.pokemon.type = ls.type;
       this.pokemon.img = ls.img;
+      this.pokemon.stats = ls.stats;
+      this.pokemon.abilities = ls.abilities;
     }
 
   },
