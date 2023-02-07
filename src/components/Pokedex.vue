@@ -44,7 +44,6 @@
 
     <v-snackbar
       v-model="snackbar"
-      :multi-line="multiLine"
     >
       {{ textSnackBar }}
 

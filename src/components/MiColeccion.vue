@@ -1,50 +1,128 @@
 <template>
   <div class="container">
-    <h1>
-      <div class="container">
-        <h2 v-if="!hasPokemons" class="text-center">
-          Aún no tienes ningún pokemon
-        </h2>
+    <div class="container">
+      <h2 v-if="!hasPokemons" class="text-center">
+        Aún no tienes ningún pokemon
+      </h2>
 
-        <v-text-field
-          label="BUSCAR POR NOMBRE O TIPO"
-          v-model="name"
-          @input="filterPokemons(name)"
-          class="search"
-        ></v-text-field>
+      <v-text-field
+        label="BUSCAR POR NOMBRE O TIPO"
+        v-model="name"
+        @input="filterPokemons(name)"
+        class="search"
+      ></v-text-field>
 
-        <div class="d-flex flex-wrap" v-if="hasPokemons">
-          <v-card
-            v-for="(pokemon, index) in paginatedPokemonsOwned"
-            :key="index"
-            width="230px"
-            class="ms-4 mb-4 .d-inline-block"
-          >
-            <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
+      <div class="d-flex flex-wrap" v-if="hasPokemons">
+        <v-card
+          v-for="(pokemon, index) in paginatedPokemonsOwned"
+          :key="index"
+          width="230px"
+          class="ms-4 mb-4 .d-inline-block"
+        >
+          <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
 
-            <v-card-title
-              >{{ pokemon.name.toUpperCase() }}
-              <v-icon>mdi-pencil</v-icon>
-            </v-card-title>
-            <v-card-text class="ms-4">ID: {{ pokemon.uid }}</v-card-text>
-            <v-card-text class="ms-4"
-              >Tipo: {{ pokemon.type.toUpperCase() }}</v-card-text
+          <v-card-title>
+            <v-dialog
+              persistent
+              transition="dialog-top-transition"
+              max-width="600"
             >
-            <v-card-text class="ms-4">Número: {{ pokemon.id }}</v-card-text>
+              <template v-slot:activator="{ on, attrs }">
+                <div
+                  style="
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    width: 100%;
+                  "
+                >
+                  <span
+                    style="
+                      flex: 1;
+                      overflow: hidden;
+                      text-overflow: ellipsis;
+                      white-space: nowrap;
+                    "
+                    >{{ pokemon.name.toUpperCase() }}</span
+                  >
+                  <v-btn color="primary" v-bind="attrs" v-on="on"
+                    ><v-icon color="black">mdi-pencil</v-icon></v-btn
+                  >
+                </div>
+              </template>
 
-            <v-card-actions>
-              <router-link :to="`/pokemon/${pokemon.uid}`">
-                <v-btn color="purple" text> Perfil </v-btn>
-              </router-link>
-              <v-btn color="red" text @click="sellPokemonOwned(pokemon.uid)">
-                Vender
+              <template v-slot:default="dialog">
+                <v-card>
+                  <v-toolbar color="warning" dark
+                    >¡Cambia el nombre de
+                    {{ pokemon.name.toUpperCase() }}!</v-toolbar
+                  >
+                  <v-card-text>
+                    <div class="text-h6 pa-12 text-center">
+                      Necesitarás 20 monedas para realizar el cambio
+                    </div>
+                  </v-card-text>
+                  <v-text-field
+                    v-on:keyup.enter="
+                      updatePokemonName(pokemon.uid, newName),
+                        (dialog.value = !canClose)
+                    "
+                    style="width: 90%"
+                    v-model="newName"
+                    :label="pokemon.name.toUpperCase()"
+                    :error-messages="nameError"
+                    :rules="[
+                      (v) =>
+                        v.length >= 3 ||
+                        'El nombre debe tener al menos 3 caracteres',
+                    ]"
+                    outlined
+                    class="ma-auto"
+                  ></v-text-field>
+                  <v-card-actions class="justify-end">
+                    <v-btn text @click="dialog.value = false">Cerrar</v-btn>
+                    <v-btn
+                      text
+                      @click="
+                        updatePokemonName(pokemon.uid, newName),
+                          (dialog.value = !canClose)
+                      "
+                      >Cambiar</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </template>
+            </v-dialog>
+          </v-card-title>
+
+          <v-snackbar v-model="snackbar">
+            {{ textSnackBar }}
+
+            <template v-slot:action="{ attrs }">
+              <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
+                Close
               </v-btn>
-            </v-card-actions>
-          </v-card>
-        </div>
-        <v-pagination v-model="page" :length="pages"></v-pagination>
+            </template>
+          </v-snackbar>
+
+          <v-card-text class="ms-4">ID: {{ pokemon.uid }}</v-card-text>
+          <v-card-text class="ms-4"
+            >Tipo: {{ pokemon.type.toUpperCase() }}</v-card-text
+          >
+          <v-card-text class="ms-4">Número: {{ pokemon.id }}</v-card-text>
+
+          <v-card-actions>
+            <router-link :to="`/pokemon/${pokemon.uid}`">
+              <v-btn color="purple" text> Perfil </v-btn>
+            </router-link>
+            <v-btn color="red" text @click="sellPokemonOwned(pokemon.uid)">
+              Vender
+            </v-btn>
+          </v-card-actions>
+        </v-card>
       </div>
-    </h1>
+      <v-pagination v-model="page" :length="pages"></v-pagination>
+    </div>
   </div>
 </template>
 
@@ -66,11 +144,17 @@ export default {
     return {
       pokemon: {},
       hasPokemons: false,
-      itemsPerPage: 1,
+      itemsPerPage: 14,
       page: 1,
       editedPokemonName: "",
       name: "",
+      newName: "",
+      nameError: [],
+      dialog: false,
+      canClose: false,
       filteredPokemonsOwned: [],
+      snackbar: false,
+      textSnackBar: ``,
     };
   },
   methods: {
@@ -78,17 +162,37 @@ export default {
       store.commit("incrementCoins", amount);
     },
 
+    decrementCoins(amount) {
+      store.commit("decrementCoins", amount);
+    },
+
     sellPokemonOwned(uid) {
       this.$store.dispatch("removePokemon", uid);
       this.incrementCoins(20);
     },
     updatePokemonName(uid, name) {
-      if (name !== null) {
-        let pokemon = this.pokemonsOwned.find((pokemon) => pokemon.uid === uid);
-        pokemon.name = name;
-        store.dispatch("editPokemon", { uid, name });
+      if (name.length >= 3) {
+        if (this.coins >= 20) {
+          let pokemon = this.pokemonsOwned.find(
+            (pokemon) => pokemon.uid === uid
+          );
+          pokemon.name = name;
+          store.dispatch("editPokemon", { uid, name });
+          this.decrementCoins(20);
+          this.canClose = true;
+          this.filterPokemons();
+          this.newName = null;
+        } else {
+          this.textSnackBar = "¡No tienes suficientes monedas!";
+          this.snackbar = true;
+        }
+      } else {
+        console.log(this.canClose);
+        this.canClose = false;
+        this.nameError = ["El nombre debe tener al menos 3 caracteres"];
       }
     },
+
     filterPokemons(name) {
       if (!name) {
         this.filteredPokemonsOwned = this.pokemonsOwned;
@@ -138,23 +242,15 @@ export default {
 </script>
 
 <style>
-.v-text-field {
-  width: 150px;
-}
 .search {
   width: 500px;
 }
 a {
   text-decoration: none;
-  margin-bottom: 5px !important;
 }
 
 .v-btn {
   padding: 0px 8px 0px 8px !important;
-}
-
-.v-input__slot {
-  padding: 0 !important;
 }
 
 .v-card__text {
