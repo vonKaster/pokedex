@@ -58,7 +58,6 @@
         </v-btn>
       </template>
     </v-snackbar>
-
   </div>
 </template>
 
@@ -187,10 +186,20 @@ export default {
         type: this.pokemon.type,
         img: this.pokemon.img,
       });
-    }
+    },
+    giveStartCoins(){
+      let startCoins = localStorage.getItem("coins");
+      let givedStartCoins = localStorage.getItem("givedStartCoins");
+      if(startCoins === null || startCoins === undefined && givedStartCoins === false) {
+        this.incrementCoins(40);
+        localStorage.setItem("givedStartCoins", true);
+      }
+  },
   },
 
   mounted(){
+    this.giveStartCoins()
+
     if (this.timer <= 29){
       this.OpenButtonDisabled = true;
         let countdown = setInterval(() => {
@@ -218,9 +227,7 @@ export default {
         type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png"
       }
-      let coins = 40;
       localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
-      localStorage.setItem("coins", coins);
     } else {
       this.pokemon.id = LastPokemon_LS.id;
       this.pokemon.name = LastPokemon_LS.name;

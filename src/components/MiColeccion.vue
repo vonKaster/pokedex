@@ -5,7 +5,7 @@
         Aún no tienes ningún pokemon
       </h2>
 
-      <v-text-field
+      <v-text-field v-if="hasPokemons"
         label="BUSCAR POR NOMBRE O TIPO"
         v-model="name"
         @input="filterPokemons(name)"
@@ -163,6 +163,7 @@ export default {
     sellPokemonOwned(uid) {
       this.$store.dispatch("removePokemon", uid);
       this.incrementCoins(20);
+      this.filteredPokemonsOwned = this.pokemonsOwned;
     },
     updatePokemonName(uid, name) {
       if (name.length >= 3) {
@@ -209,7 +210,7 @@ export default {
 
   created: function () {
     let hasPokemons = JSON.parse(localStorage.getItem("pokemonsOwned"));
-    if (hasPokemons === null) {
+    if (hasPokemons === null || hasPokemons === undefined || hasPokemons.length < 1) {
       this.hasPokemons = false;
     } else {
       this.hasPokemons = true;

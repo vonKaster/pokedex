@@ -145,12 +145,13 @@
 
 <script>
 import store from "@/store/index.js";
-import { mapState } from "vuex";
+import { mapActions, mapState } from "vuex";
 import axios from "axios";
 export default {
   name: "pokemonPage",
   computed: {
     ...mapState(["pokemonsOwned", "coins"]),
+
   },
   data() {
     return {
@@ -180,6 +181,7 @@ export default {
   },
 
   methods: {
+    ...mapActions(['incrementCoins', 'decrementCoins']),
     getName(ability) {
       for (let i = 0; i < ability.names.length; i++) {
         if (ability.names[i].language.name === "es") {
@@ -193,9 +195,6 @@ export default {
           return ability.flavor_text_entries[i].flavor_text;
         }
       }
-    },
-    decrementCoins(amount) {
-      store.commit("decrementCoins", amount);
     },
     updatePokemonName(uid, name) {
       if (name.length >= 3) {
