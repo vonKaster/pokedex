@@ -16,7 +16,7 @@
         <v-card
           v-for="(pokemon, index) in paginatedPokemonsOwned"
           :key="index"
-          width="230px"
+          width="275px"
           class="ms-4 mb-4 .d-inline-block"
         >
           <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
@@ -100,7 +100,7 @@
 
             <template v-slot:action="{ attrs }">
               <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-                Close
+                Cerrar
               </v-btn>
             </template>
           </v-snackbar>
@@ -128,7 +128,7 @@
 
 <script>
 import store from "@/store/index.js";
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 import pokemonPage from "./pokemonPage.vue";
 export default {
   name: "coleccion",
@@ -158,13 +158,7 @@ export default {
     };
   },
   methods: {
-    incrementCoins(amount) {
-      store.commit("incrementCoins", amount);
-    },
-
-    decrementCoins(amount) {
-      store.commit("decrementCoins", amount);
-    },
+    ...mapActions(['decrementCoins', 'incrementCoins']),
 
     sellPokemonOwned(uid) {
       this.$store.dispatch("removePokemon", uid);

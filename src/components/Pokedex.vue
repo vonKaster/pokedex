@@ -54,7 +54,7 @@
           v-bind="attrs"
           @click="snackbar = false"
         >
-          Close
+          Cerrar
         </v-btn>
       </template>
     </v-snackbar>
@@ -65,7 +65,7 @@
 <script>
 import store from "@/store/index.js";
 import axios from "axios";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapMutations } from "vuex";
 export default {
   name: "Pokedex",
 
@@ -103,7 +103,8 @@ export default {
   },
 
   methods: {
-    ...mapActions(['setTimer']),
+    ...mapActions(['setTimer', 'decrementCoins', 'incrementCoins']),
+    ...mapMutations(['updateCoins']),
 
     startTimer() {
 
@@ -137,7 +138,6 @@ export default {
         axios
           .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           .then((response) => {
-            console.log(response);
             this.pokemon.img = response.data.sprites.front_default;
             this.pokemon.type = response.data.name;
             this.pokemon.id = response.data.id;
@@ -147,6 +147,7 @@ export default {
             this.saveLastPokemonRolled()
             this.hasSaved = false;
             this.hasSelled = false;
+            localStorage.setItem("coins", this.coins);
           })
           .catch((error) => {
             this.pokemon.type = "No existe";
@@ -180,12 +181,6 @@ export default {
       this.incrementCoins(20);
       this.hasSelled = true;
     },
-    incrementCoins(amount) {
-      store.commit("incrementCoins", amount);
-    },
-    decrementCoins(amount) {
-      store.commit("decrementCoins", amount);
-    },
     saveLastPokemonRolled(){
       store.commit("updateLastPokemonRolled", {
         id: this.pokemon.id,
@@ -215,22 +210,24 @@ export default {
         });
     }
 
-    let ls = JSON.parse(localStorage.getItem("lastPokemon"));
-
-    if(ls === null || ls === undefined) {
+    let LastPokemon_LS = JSON.parse(localStorage.getItem("lastPokemon"));
+    
+    if(LastPokemon_LS === null || LastPokemon_LS === undefined) {
       let pokemon = {
         id: 1,
         type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png"
       }
+      let coins = 40;
       localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
+      localStorage.setItem("coins", coins);
     } else {
-      this.pokemon.id = ls.id;
-      this.pokemon.name = ls.name;
-      this.pokemon.type = ls.type;
-      this.pokemon.img = ls.img;
-      this.pokemon.stats = ls.stats;
-      this.pokemon.abilities = ls.abilities;
+      this.pokemon.id = LastPokemon_LS.id;
+      this.pokemon.name = LastPokemon_LS.name;
+      this.pokemon.type = LastPokemon_LS.type;
+      this.pokemon.img = LastPokemon_LS.img;
+      this.pokemon.stats = LastPokemon_LS.stats;
+      this.pokemon.abilities = LastPokemon_LS.abilities;
     }
 
   },

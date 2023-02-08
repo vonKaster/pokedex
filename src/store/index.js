@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   data: {},
   state: {
-    coins: Number(localStorage.getItem("coins")) || 40,
+    coins: Number(localStorage.getItem("coins")),
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
     lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
     timer: JSON.parse(localStorage.getItem("timer")) || 30,
@@ -17,21 +17,13 @@ export default new Vuex.Store({
       state.timer = timer;
       localStorage.setItem("timer", timer);
     },
-    incrementCoins(state, amount) {
-      state.coins += amount;
-      localStorage.setItem("coins", state.coins);
-    },
-    decrementCoins(state, amount) {
-      state.coins -= amount;
-      localStorage.setItem("coins", state.coins);
-    },
     updatePokemonsOwned(state, pokemons) {
       state.pokemonsOwned = pokemons;
       localStorage.setItem("pokemonsOwned", JSON.stringify(pokemons));
     },
     updateCoins(state, coins) {
       state.coins = coins;
-      localStorage.setItem("coins", JSON.stringify(coins));
+      localStorage.setItem("coins", coins);
     },
     updateLastPokemonRolled(state, lastPokemonRolled) {
       state.lastPokemonRolled = lastPokemonRolled;
@@ -42,7 +34,7 @@ export default new Vuex.Store({
   modules: {},
   watch: {
     coins(newValue) {
-      localStorage.setItem("coins", JSON.stringify(newValue));
+      localStorage.setItem("coins", newValue);
     },
     pokemonsOwned(newValue) {
       localStorage.setItem("pokemonsOwned", JSON.stringify(newValue));
@@ -68,6 +60,14 @@ export default new Vuex.Store({
     },
     setTimer({ commit }, timer) {
       commit("setTimer", timer);
+    },
+    incrementCoins({ commit }, amount) {
+      const coins = this.state.coins + amount;
+      commit("updateCoins", coins);
+    },
+    decrementCoins({ commit }, amount) {
+      const coins = this.state.coins - amount;
+      commit("updateCoins", coins);
     },
   },
   getters: {
