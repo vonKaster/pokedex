@@ -176,7 +176,7 @@ export default {
           this.decrementCoins(20);
           this.canClose = true;
           this.filterPokemons();
-          this.newName = null;
+          this.newName = "";
         } else {
           this.textSnackBar = "¡No tienes suficientes monedas!";
           this.snackbar = true;

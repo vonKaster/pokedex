@@ -20,6 +20,7 @@
       <v-toolbar-items>
         <v-btn text :to="{ name: 'home' }">Abrir Pokebolas</v-btn>
         <v-btn text :to="{ name: 'coleccion' }">Mi colección</v-btn>
+        <v-btn text :to="{ name: 'tienda' }">Tienda</v-btn>
       </v-toolbar-items>
     </v-toolbar>
   </div>
@@ -36,7 +37,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['coins'])
+    ...mapState(['coins', 'pokeballs'])
   },
 
 };

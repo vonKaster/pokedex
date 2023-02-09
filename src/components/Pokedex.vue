@@ -142,7 +142,7 @@ export default {
             this.pokemon.id = response.data.id;
             this.pokemon.stats = response.data.stats;
             this.pokemon.abilities = response.data.abilities;
-            this.pokemon.name = 'Sin nombre';
+            this.pokemon.name = this.pokemon.type;
             this.saveLastPokemonRolled()
             this.hasSaved = false;
             this.hasSelled = false;
@@ -152,7 +152,7 @@ export default {
             this.pokemon.type = "No existe";
           });
       } else {
-        this.textSnackBar = "¡No tienes suficientes monedas!"
+        this.textSnackBar = "¡No tenes suficientes monedas!"
         this.snackbar = true;
         this.hasPaided = false;
       }
@@ -176,7 +176,7 @@ export default {
       this.textSnackBar = "Pokemon guardado exitosamente";
     },
     async sellPokemonNotOwned() {
-      this.$store.dispatch("removePokemon", this.pokemon.id);
+      this.$store.dispatch("removePokemon", this.pokemon.uid);
       this.incrementCoins(20);
       this.hasSelled = true;
     },

@@ -10,6 +10,7 @@ export default new Vuex.Store({
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
     lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
     timer: JSON.parse(localStorage.getItem("timer")) || 30,
+    pokeballs: JSON.parse(localStorage.getItem("pokeballs")) || {}
   },
   getters: {},
   mutations: {
@@ -25,6 +26,19 @@ export default new Vuex.Store({
       state.coins = coins;
       localStorage.setItem("coins", coins);
     },
+    updatePokeballs(state, newPokeballs) {
+      const pokeballs = state.pokeballs;
+      Object.keys(newPokeballs).forEach(key => {
+        if (pokeballs[key]) {
+          pokeballs[key] += newPokeballs[key];
+        } else {
+          pokeballs[key] = newPokeballs[key];
+        }
+      });
+      state.pokeballs = pokeballs;
+      localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
+    },
+    
     updateLastPokemonRolled(state, lastPokemonRolled) {
       state.lastPokemonRolled = lastPokemonRolled;
       localStorage.clear("lastPokemon");
@@ -40,6 +54,9 @@ export default new Vuex.Store({
       localStorage.setItem("pokemonsOwned", JSON.stringify(newValue));
     },
     timer(newValue) {
+      localStorage.setItem("timer", newValue);
+    },
+    pokeballs(newValue) {
       localStorage.setItem("timer", newValue);
     },
   },
