@@ -13,9 +13,7 @@
           <v-btn
             :disabled="hasSaved === true || hasSelled === true"
             color="green"
-            @click="
-              savePokemon();
-            "
+            @click="savePokemon()"
             text
           >
             Atrapar
@@ -31,6 +29,19 @@
         </v-card-actions>
       </div>
     </v-card>
+
+    <div class="d-flex mt-3 justify-center">
+      <v-img
+        v-for="ball in balls"
+        :key="ball.name"
+        :src="ball.src"
+        max-width="50px"
+        @click="selectBall(ball)"
+        :class="{ selected: ball.selected}"
+        class="ms-3"
+      />
+    </div>
+
     <v-btn
       :disabled="OpenButtonDisabled"
       @click="
@@ -38,22 +49,14 @@
         startTimer();
       "
       class="mt-4"
-      
       >{{ OpenButtonInfo }}</v-btn
     >
 
-    <v-snackbar
-      v-model="snackbar"
-    >
+    <v-snackbar v-model="snackbar">
       {{ textSnackBar }}
 
       <template v-slot:action="{ attrs }">
-        <v-btn
-          color="red"
-          text
-          v-bind="attrs"
-          @click="snackbar = false"
-        >
+        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
           Cerrar
         </v-btn>
       </template>
@@ -84,33 +87,55 @@ export default {
       pokemon: {
         uid: 1,
         id: 1,
-        name: 'Sin nombre',
+        name: "Sin nombre",
         type: "¡Abre una pokebola!",
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
         stats: [],
         abilities: [],
       },
+      balls: [
+        {
+          name: "Normal",
+          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png',
+          selected: false,
+        },
+        {
+          name: "Super",
+          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png',
+          selected: false,
+        },
+        {
+          name: "Ultra",
+          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png',
+          selected: false,
+        },
+        {
+          name: "Master",
+          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png',
+          selected: false,
+        },
+      ],
     };
   },
 
   computed: {
     ...mapState({
-      timer: state => state.timer,
-      pokemonsOwned: state => state.pokemonsOwned,
-      coins: state => state.coins
-    })
+      timer: (state) => state.timer,
+      pokemonsOwned: (state) => state.pokemonsOwned,
+      coins: (state) => state.coins,
+      pokeballs: (state) => state.pokeballs,
+    }),
   },
 
   methods: {
-    ...mapActions(['setTimer', 'decrementCoins', 'incrementCoins']),
-    ...mapMutations(['updateCoins']),
+    ...mapActions(["setTimer", "decrementCoins", "incrementCoins"]),
+    ...mapMutations(["updateCoins"]),
 
     startTimer() {
-
-      if(this.hasPaided === true) {
+      if (this.hasPaided === true) {
         this.OpenButtonDisabled = true;
         let countdown = setInterval(() => {
-          this.setTimer(this.timer - 1)
+          this.setTimer(this.timer - 1);
           this.OpenButtonInfo = this.timer;
           if (this.OpenButtonInfo === 0) {
             clearInterval(countdown);
@@ -119,13 +144,12 @@ export default {
             this.OpenButtonInfo = "Abrir";
             this.hasPaided = false;
           }
-        }, 1000)
-  
+        }, 1000);
+
         this.$once("hook:beforeDestroy", () => {
           clearInterval(countdown);
         });
       }
-
     },
 
     obtenerPokemon(id) {
@@ -133,7 +157,7 @@ export default {
         this.decrementCoins(10);
         this.hasPaided = true;
       }
-      if (this.hasPaided === true){
+      if (this.hasPaided === true) {
         axios
           .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           .then((response) => {
@@ -143,7 +167,7 @@ export default {
             this.pokemon.stats = response.data.stats;
             this.pokemon.abilities = response.data.abilities;
             this.pokemon.name = this.pokemon.type;
-            this.saveLastPokemonRolled()
+            this.saveLastPokemonRolled();
             this.hasSaved = false;
             this.hasSelled = false;
             localStorage.setItem("coins", this.coins);
@@ -152,11 +176,10 @@ export default {
             this.pokemon.type = "No existe";
           });
       } else {
-        this.textSnackBar = "¡No tenes suficientes monedas!"
+        this.textSnackBar = "¡No tenes suficientes monedas!";
         this.snackbar = true;
         this.hasPaided = false;
       }
-      
     },
     getRandomInt() {
       return Math.floor(Math.random() * 906);
@@ -173,60 +196,68 @@ export default {
       });
       this.hasSaved = true;
       this.snackbar = true;
-      this.textSnackBar = "Pokemon guardado exitosamente";
+      this.textSnackBar = "¡Pokemon atrapado con éxito";
     },
     async sellPokemonNotOwned() {
       this.$store.dispatch("removePokemon", this.pokemon.uid);
       this.incrementCoins(20);
       this.hasSelled = true;
     },
-    saveLastPokemonRolled(){
+    saveLastPokemonRolled() {
       store.commit("updateLastPokemonRolled", {
         id: this.pokemon.id,
         type: this.pokemon.type,
         img: this.pokemon.img,
       });
     },
-    giveStartCoins(){
+    giveStartCoins() {
       let startCoins = localStorage.getItem("coins");
       let givedStartCoins = localStorage.getItem("givedStartCoins");
-      if(startCoins === null || startCoins === undefined && givedStartCoins === false) {
+      if (
+        startCoins === null ||
+        (startCoins === undefined && givedStartCoins === false)
+      ) {
         this.incrementCoins(40);
         localStorage.setItem("givedStartCoins", true);
       }
-  },
+    },
+
+    selectBall(ball) {
+      this.balls.forEach((b) => { b.selected = false });
+      ball.selected = true;
+    },
   },
 
-  mounted(){
-    this.giveStartCoins()
+  mounted() {
+    this.giveStartCoins();
 
-    if (this.timer <= 29){
+    if (this.timer <= 29) {
       this.OpenButtonDisabled = true;
-        let countdown = setInterval(() => {
-          this.setTimer(this.timer - 1)
-          this.OpenButtonInfo = this.timer;
-          if (this.OpenButtonInfo === 0) {
-            clearInterval(countdown);
-            this.setTimer(30);
-            this.OpenButtonDisabled = false;
-            this.OpenButtonInfo = "Abrir";
-            this.hasPaided = false;
-          }
-        }, 1000)
-  
-        this.$once("hook:beforeDestroy", () => {
+      let countdown = setInterval(() => {
+        this.setTimer(this.timer - 1);
+        this.OpenButtonInfo = this.timer;
+        if (this.OpenButtonInfo === 0) {
           clearInterval(countdown);
-        });
+          this.setTimer(30);
+          this.OpenButtonDisabled = false;
+          this.OpenButtonInfo = "Abrir";
+          this.hasPaided = false;
+        }
+      }, 1000);
+
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(countdown);
+      });
     }
 
     let LastPokemon_LS = JSON.parse(localStorage.getItem("lastPokemon"));
-    
-    if(LastPokemon_LS === null || LastPokemon_LS === undefined) {
+
+    if (LastPokemon_LS === null || LastPokemon_LS === undefined) {
       let pokemon = {
         id: 1,
         type: "¡Abre una pokebola!",
-        img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png"
-      }
+        img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
+      };
       localStorage.setItem("lastPokemon", JSON.stringify(pokemon));
     } else {
       this.pokemon.id = LastPokemon_LS.id;
@@ -238,6 +269,17 @@ export default {
     }
 
   },
-
 };
 </script>
+
+<style>
+.selected {
+  border: 2px solid blue;
+  border-radius: 25px;
+}
+
+.disabled {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+</style>

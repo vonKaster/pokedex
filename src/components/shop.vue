@@ -8,7 +8,7 @@
         <v-card-title>Pokeball Normal</v-card-title>
         <v-card-text class="pb-0 text-left ms-4">Precio: 20 </v-card-text>
         <v-card-text class="pb-0 text-left ms-4"
-          >Compradas: {{ pokeball.normal }}
+          >Probabilidad del 30% de atrapar
         </v-card-text>
 
         <div class="mt-2">
@@ -47,7 +47,7 @@
         <v-card-title>Pokeball Super</v-card-title>
         <v-card-text class="pb-0 text-left ms-4">Precio: 30 </v-card-text>
         <v-card-text class="pb-0 text-left ms-4"
-          >Compradas: {{ pokeball.super }}
+          >Probabilidad del 50% de atrapar
         </v-card-text>
 
         <div class="mt-2">
@@ -86,7 +86,7 @@
         <v-card-title>Pokeball Ultra</v-card-title>
         <v-card-text class="pb-0 text-left ms-4">Precio: 50 </v-card-text>
         <v-card-text class="pb-0 text-left ms-4"
-          >Compradas: {{ pokeball.ultra }}
+          >Probabilidad del 75% de atrapar
         </v-card-text>
 
         <div class="mt-2">
@@ -129,7 +129,7 @@
         <v-card-title>Pokeball Master</v-card-title>
         <v-card-text class="pb-0 text-left ms-4">Precio: 100 </v-card-text>
         <v-card-text class="pb-0 text-left ms-4"
-          >Compradas: {{ pokeball.master }}
+          >Probabilidad del 100% de atrapar
         </v-card-text>
 
         <div class="mt-2">
