@@ -31,15 +31,16 @@
     </v-card>
 
     <div class="d-flex mt-3 justify-center">
-      <v-img
-        v-for="ball in balls"
-        :key="ball.name"
-        :src="ball.src"
-        max-width="50px"
-        @click="selectBall(ball)"
-        :class="{ selected: ball.selected }"
-        class="ms-3"
-      />
+      <div v-for="ball in balls" :key="ball.name">
+        <h4 class="ms-3">{{ ball.amount }}</h4>
+        <v-img
+          :src="ball.src"
+          max-width="50px"
+          @click="selectBall(ball)"
+          :class="{ selected: ball.selected }"
+          class="ms-3"
+        />
+      </div>
     </div>
 
     <v-btn
@@ -99,21 +100,25 @@ export default {
           name: "normal",
           src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png",
           selected: false,
+          amount: 0,
         },
         {
           name: "super",
           src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png",
           selected: false,
+          amount: 0,
         },
         {
           name: "ultra",
           src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png",
           selected: false,
+          amount: 0,
         },
         {
           name: "master",
           src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png",
           selected: false,
+          amount: 0,
         },
       ],
     };
@@ -126,6 +131,9 @@ export default {
       coins: (state) => state.coins,
       pokeballs: (state) => state.pokeballs,
     }),
+    pokeLS() {
+      return JSON.parse(localStorage.getItem("pokeballs"));
+    },
   },
 
   methods: {
@@ -262,16 +270,25 @@ export default {
         img: this.pokemon.img,
       });
     },
-    giveStartCoins() {
+    giveStartStuff() {
       let startCoins = localStorage.getItem("coins");
-      let givedStartCoins = localStorage.getItem("givedStartCoins");
+      let startPokeballs = localStorage.getItem("pokeballs");
+      let givedStartStuff = localStorage.getItem("givedStartStuff");
       if (
         startCoins === null ||
-        (startCoins === undefined && givedStartCoins === false)
+        (startCoins === undefined &&
+          givedStartCoins === false &&
+          startPokeballs === null) ||
+        (startPokeballs === undefined && startPokeballs === false)
       ) {
         this.incrementCoins(40);
-        localStorage.setItem("givedStartCoins", true);
+        localStorage.setItem(
+          "pokeballs",
+          JSON.stringify({ normal: 5, super: 3, ultra: 2, master: 1 })
+        );
+        localStorage.setItem("givedStartStuff", true);
       }
+      let givedStartPokeballs = localStorage.getItem("givedStartPokeballs");
     },
 
     selectBall(ball) {
@@ -280,10 +297,41 @@ export default {
       });
       ball.selected = true;
     },
+
+    updateBalls() {
+      const pokeLS = JSON.parse(localStorage.getItem("pokeballs"));
+      this.balls = [
+        {
+          name: "normal",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png",
+          selected: false,
+          amount: pokeLS.normal !== undefined ? pokeLS.normal : 0,
+        },
+        {
+          name: "super",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png",
+          selected: false,
+          amount: pokeLS.super !== undefined ? pokeLS.super : 0,
+        },
+        {
+          name: "ultra",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png",
+          selected: false,
+          amount: pokeLS.ultra !== undefined ? pokeLS.ultra : 0,
+        },
+        {
+          name: "master",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png",
+          selected: false,
+          amount: pokeLS.master !== undefined ? pokeLS.master : 0,
+        },
+      ];
+    },
   },
 
   mounted() {
-    this.giveStartCoins();
+    this.giveStartStuff();
+    this.updateBalls();
 
     if (this.timer <= 29) {
       this.OpenButtonDisabled = true;
@@ -304,6 +352,7 @@ export default {
       });
     }
 
+    console.log(this.pokeLS);
     let LastPokemon_LS = JSON.parse(localStorage.getItem("lastPokemon"));
 
     if (LastPokemon_LS === null || LastPokemon_LS === undefined) {
