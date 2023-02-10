@@ -52,6 +52,9 @@
       class="mt-4"
       >{{ OpenButtonInfo }}</v-btn
     >
+    <div class="mt-10">
+      <v-btn @click="resetLocalStorage()">Resetear Local Storage</v-btn>
+    </div>
 
     <v-snackbar v-model="snackbar">
       {{ textSnackBar }}
@@ -164,6 +167,10 @@ export default {
     obtenerPokemon(id) {
       if (this.coins >= 10) {
         this.decrementCoins(10);
+        store.commit(
+          "updatePokeballs",
+          JSON.parse(localStorage.getItem("pokeballs"))
+        );
         this.hasPaided = true;
       }
       if (this.hasPaided === true) {
@@ -236,6 +243,9 @@ export default {
       const caught = Math.random() < probability;
       if (!caught) {
         this.textSnackBar = `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`;
+        localPokeballs[selectedBall]--;
+        localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
+        this.updateBalls();
         this.snackbar = true;
         return;
       }
@@ -252,6 +262,7 @@ export default {
       });
       localPokeballs[selectedBall]--;
       localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
+      this.updateBalls();
       this.textSnackBar = `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`;
       this.snackbar = true;
       this.hasSaved = true;
@@ -281,7 +292,7 @@ export default {
           startPokeballs === null) ||
         (startPokeballs === undefined && startPokeballs === false)
       ) {
-        this.incrementCoins(40);
+        this.incrementCoins(200);
         localStorage.setItem(
           "pokeballs",
           JSON.stringify({ normal: 5, super: 3, ultra: 2, master: 1 })
@@ -326,6 +337,10 @@ export default {
           amount: pokeLS.master !== undefined ? pokeLS.master : 0,
         },
       ];
+    },
+    resetLocalStorage() {
+      localStorage.clear();
+      location.reload();
     },
   },
 
