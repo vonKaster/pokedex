@@ -219,11 +219,9 @@ export default {
       } else {
         this.callSnackBar(false);
       }
-      this.quantityNormal = 0;
-      this.quantitySuper = 0;
-      this.quantityUltra = 0;
-      this.quantityMaster = 0;
+      this[`quantity${type[0].toUpperCase() + type.slice(1)}`] = 0;
     },
+
 
     callSnackBar(success) {
       this.snackbar = true;
