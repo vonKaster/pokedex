@@ -37,7 +37,7 @@
         :src="ball.src"
         max-width="50px"
         @click="selectBall(ball)"
-        :class="{ selected: ball.selected}"
+        :class="{ selected: ball.selected }"
         class="ms-3"
       />
     </div>
@@ -92,26 +92,27 @@ export default {
         img: "https://www.pngitem.com/pimgs/m/580-5807856_pokemon-pokeball-pokeball-transparent-background-hd-png-download.png",
         stats: [],
         abilities: [],
+        caughtWith: "",
       },
       balls: [
         {
-          name: "Normal",
-          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png',
+          name: "normal",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png",
           selected: false,
         },
         {
-          name: "Super",
-          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png',
+          name: "super",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png",
           selected: false,
         },
         {
-          name: "Ultra",
-          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png',
+          name: "ultra",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png",
           selected: false,
         },
         {
-          name: "Master",
-          src: 'https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png',
+          name: "master",
+          src: "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png",
           selected: false,
         },
       ],
@@ -171,6 +172,7 @@ export default {
             this.hasSaved = false;
             this.hasSelled = false;
             localStorage.setItem("coins", this.coins);
+            localStorage.setItem("pokeballs", JSON.stringify(this.pokeballs));
           })
           .catch((error) => {
             this.pokemon.type = "No existe";
@@ -184,20 +186,70 @@ export default {
     getRandomInt() {
       return Math.floor(Math.random() * 906);
     },
-    async savePokemon() {
-      await this.$store.dispatch("addPokemon", {
+    savePokemon() {
+      let selectedBall;
+      let probability;
+
+      this.balls.forEach((ball) => {
+        if (ball.selected) {
+          selectedBall = ball.name;
+          switch (selectedBall) {
+            case "normal":
+              probability = 0.3;
+              break;
+            case "super":
+              probability = 0.5;
+              break;
+            case "ultra":
+              probability = 0.75;
+              break;
+            case "master":
+              probability = 1;
+              break;
+            default:
+              probability = 0;
+          }
+        }
+      });
+
+      if (!selectedBall) {
+        this.textSnackBar = "Selecciona una pokebola para atrapar al Pokémon";
+        this.snackbar = true;
+        return;
+      }
+
+      const localPokeballs = JSON.parse(localStorage.getItem("pokeballs"));
+      if (!localPokeballs[selectedBall]) {
+        this.textSnackBar = `No tienes pokebolas ${selectedBall.toUpperCase()}`;
+        this.snackbar = true;
+        return;
+      }
+
+      const caught = Math.random() < probability;
+      if (!caught) {
+        this.textSnackBar = `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`;
+        this.snackbar = true;
+        return;
+      }
+
+      this.$store.dispatch("addPokemon", {
         uid: this.pokemonsOwned.length + 1,
         id: this.pokemon.id,
         name: this.pokemon.name,
-        stats: this.pokemon.stats,
-        abilities: this.pokemon.abilities,
         type: this.pokemon.type,
         img: this.pokemon.img,
+        stats: this.pokemon.stats,
+        abilities: this.pokemon.abilities,
+        caughtWith: selectedBall,
       });
-      this.hasSaved = true;
+      localPokeballs[selectedBall]--;
+      localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
+      this.textSnackBar = `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`;
       this.snackbar = true;
-      this.textSnackBar = "¡Pokemon atrapado con éxito";
+      this.hasSaved = true;
+      this.hasSelled = true;
     },
+
     async sellPokemonNotOwned() {
       this.$store.dispatch("removePokemon", this.pokemon.uid);
       this.incrementCoins(20);
@@ -223,7 +275,9 @@ export default {
     },
 
     selectBall(ball) {
-      this.balls.forEach((b) => { b.selected = false });
+      this.balls.forEach((b) => {
+        b.selected = false;
+      });
       ball.selected = true;
     },
   },
@@ -267,7 +321,6 @@ export default {
       this.pokemon.stats = LastPokemon_LS.stats;
       this.pokemon.abilities = LastPokemon_LS.abilities;
     }
-
   },
 };
 </script>

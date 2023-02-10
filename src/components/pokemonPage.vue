@@ -98,6 +98,7 @@
             >Tipo: {{ pokemon.type.toUpperCase() }}</v-card-text
           >
           <v-card-text class="ms-4">Número: {{ pokemon.id }}</v-card-text>
+          <v-card-text class="ms-4 mb-4">Atrapado con: <v-img :src="returnCaughtWith()" width="50px"></v-img></v-card-text>
           <br />
         </v-card>
       </div>
@@ -177,7 +178,6 @@ export default {
     this.pokemon = this.pokemonsOwned.find(
       (pokemon) => pokemon.uid === parseInt(this.$route.params.uid)
     );
-    console.log(this.pokemonsOwned);
   },
 
   methods: {
@@ -212,11 +212,30 @@ export default {
           this.snackbar = true;
         }
       } else {
-        console.log(this.canClose);
         this.canClose = false;
         this.nameError = ["El nombre debe tener al menos 3 caracteres"];
       }
     },
+
+    returnCaughtWith(){
+      let caughtWith = this.pokemon.caughtWith;
+      let src = "";
+      switch(caughtWith) {
+        case "normal":
+          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png"
+          break;
+        case "super":
+          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png"
+          break;
+        case "ultra":
+          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png"
+          break;
+        case "master":
+          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png"
+          break;
+      }
+      return src;
+    }
   },
 
   mounted() {
@@ -224,7 +243,6 @@ export default {
       try {
         const response = await axios.get(ability.ability.url);
         this.abilities.push(response.data);
-        console.log(this.abilities);
       } catch (error) {
         console.error(error);
       }
