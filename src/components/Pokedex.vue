@@ -167,10 +167,6 @@ export default {
     obtenerPokemon(id) {
       if (this.coins >= 10) {
         this.decrementCoins(10);
-        store.commit(
-          "updatePokeballs",
-          JSON.parse(localStorage.getItem("pokeballs"))
-        );
         this.hasPaided = true;
       }
       if (this.hasPaided === true) {
@@ -298,6 +294,7 @@ export default {
           JSON.stringify({ normal: 5, super: 3, ultra: 2, master: 1 })
         );
         localStorage.setItem("givedStartStuff", true);
+        location.reload();
       }
       let givedStartPokeballs = localStorage.getItem("givedStartPokeballs");
     },
