@@ -222,7 +222,6 @@ export default {
       this[`quantity${type[0].toUpperCase() + type.slice(1)}`] = 0;
     },
 
-
     callSnackBar(success) {
       this.snackbar = true;
       if (success === true) {

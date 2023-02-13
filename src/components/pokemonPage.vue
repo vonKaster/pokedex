@@ -33,9 +33,17 @@
                     "
                     >{{ pokemon.name.toUpperCase() }}</span
                   >
-                  <v-btn color="primary" v-bind="attrs" v-on="on"
-                    ><v-icon color="black">mdi-pencil</v-icon></v-btn
+                  <v-btn
+                    class="ma-2"
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    small
+                    fab
+                    color="indigo"
                   >
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
                 </div>
               </template>
 
@@ -98,31 +106,33 @@
             >Tipo: {{ pokemon.type.toUpperCase() }}</v-card-text
           >
           <v-card-text class="ms-4">Número: {{ pokemon.id }}</v-card-text>
-          <v-card-text class="ms-4 mb-4">Atrapado con: <v-img :src="returnCaughtWith()" width="50px"></v-img></v-card-text>
+          <v-card-text class="ms-4 mb-4"
+            >Atrapado con: <v-img :src="returnCaughtWith()" width="50px"></v-img
+          ></v-card-text>
           <br />
         </v-card>
       </div>
       <div class="d-flex justify-center">
-          <v-card
-            v-for="(stat, index) in pokemon.stats"
-            :key="index"
-            :style="{
-              width: '180px',
-              height: '110px',
-              margin: '5px',
-            }"
+        <v-card
+          v-for="(stat, index) in pokemon.stats"
+          :key="index"
+          :style="{
+            width: '180px',
+            height: '110px',
+            margin: '5px',
+          }"
+        >
+          <v-icon
+            class="d-flex justify-center mt-2"
+            :size="50"
+            :color="colors[index]"
+            >{{ icons[index] }}</v-icon
           >
-            <v-icon
-              class="d-flex justify-center mt-2"
-              :size="50"
-              :color="colors[index]"
-              >{{ icons[index] }}</v-icon
-            >
-            <h4 class="text-center mt-2">
-              {{ stat.stat.name.toUpperCase() }}: {{ stat.base_stat }}
-            </h4>
-          </v-card>
-        </div>
+          <h4 class="text-center mt-2">
+            {{ stat.stat.name.toUpperCase() }}: {{ stat.base_stat }}
+          </h4>
+        </v-card>
+      </div>
     </div>
     <div class="d-flex justify-center">
       <v-card
@@ -152,7 +162,6 @@ export default {
   name: "pokemonPage",
   computed: {
     ...mapState(["pokemonsOwned", "coins"]),
-
   },
   data() {
     return {
@@ -181,7 +190,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(['incrementCoins', 'decrementCoins']),
+    ...mapActions(["incrementCoins", "decrementCoins"]),
     getName(ability) {
       for (let i = 0; i < ability.names.length; i++) {
         if (ability.names[i].language.name === "es") {
@@ -217,25 +226,29 @@ export default {
       }
     },
 
-    returnCaughtWith(){
+    returnCaughtWith() {
       let caughtWith = this.pokemon.caughtWith;
       let src = "";
-      switch(caughtWith) {
+      switch (caughtWith) {
         case "normal":
-          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png"
+          src =
+            "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/pokeball_sell.png";
           break;
         case "super":
-          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png"
+          src =
+            "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/superball_sell.png";
           break;
         case "ultra":
-          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png"
+          src =
+            "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/ultraball_sell.png";
           break;
         case "master":
-          src = "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png"
+          src =
+            "https://raw.githubusercontent.com/vonKaster/pokedex/main/src/assets/img/masterball_sell.png";
           break;
       }
       return src;
-    }
+    },
   },
 
   mounted() {

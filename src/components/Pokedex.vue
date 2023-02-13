@@ -173,6 +173,7 @@ export default {
             this.saveLastPokemonRolled();
             this.hasSaved = false;
             this.hasSelled = false;
+            localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
             localStorage.setItem("coins", this.coins);
             localStorage.setItem("pokeballs", JSON.stringify(this.pokeballs));
           })

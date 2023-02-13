@@ -1,11 +1,10 @@
 <template>
   <div class="container">
     <div class="container">
-      <h2 v-if="!hasPokemons" class="text-center">
-        No tenés ningún pokemon
-      </h2>
+      <h2 v-if="!hasPokemons" class="text-center">No tenés ningún pokemon</h2>
 
-      <v-text-field v-if="hasPokemons"
+      <v-text-field
+        v-if="hasPokemons"
         label="BUSCAR POR NOMBRE O TIPO"
         v-model="name"
         @input="filterPokemons(name)"
@@ -45,7 +44,15 @@
                     "
                     >{{ pokemon.name.toUpperCase() }}</span
                   >
-                  <v-btn class="ma-2" v-bind="attrs" v-on="on" outlined small fab color="indigo">
+                  <v-btn
+                    class="ma-2"
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    small
+                    fab
+                    color="indigo"
+                  >
                     <v-icon>mdi-pencil</v-icon>
                   </v-btn>
                 </div>
@@ -158,7 +165,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(['decrementCoins', 'incrementCoins']),
+    ...mapActions(["decrementCoins", "incrementCoins"]),
 
     sellPokemonOwned(uid) {
       if (this.pokemonsOwned.length === 1) {
@@ -213,7 +220,11 @@ export default {
 
   created: function () {
     let hasPokemons = JSON.parse(localStorage.getItem("pokemonsOwned"));
-    if (hasPokemons === null || hasPokemons === undefined || hasPokemons.length < 1) {
+    if (
+      hasPokemons === null ||
+      hasPokemons === undefined ||
+      hasPokemons.length < 1
+    ) {
       this.hasPokemons = false;
     } else {
       this.hasPokemons = true;
