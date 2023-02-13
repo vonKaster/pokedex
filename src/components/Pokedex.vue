@@ -141,7 +141,7 @@ export default {
 
   methods: {
     ...mapActions(["setTimer", "decrementCoins", "incrementCoins"]),
-    ...mapMutations(["updateCoins"]),
+    ...mapMutations(["updateCoins", "updatePokeballs"]),
 
     startTimer() {
       if (this.hasPaided === true) {
@@ -246,7 +246,7 @@ export default {
         return;
       }
 
-      this.$store.dispatch("addPokemon", {
+      store.dispatch("addPokemon", {
         uid: this.pokemonsOwned.length + 1,
         id: this.pokemon.id,
         name: this.pokemon.name,
@@ -257,7 +257,7 @@ export default {
         caughtWith: selectedBall,
       });
       localPokeballs[selectedBall]--;
-      localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
+      store.dispatch("setPokeballs", localPokeballs);
       this.updateBalls();
       this.textSnackBar = `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`;
       this.snackbar = true;
@@ -266,7 +266,7 @@ export default {
     },
 
     async sellPokemonNotOwned() {
-      this.$store.dispatch("removePokemon", this.pokemon.uid);
+      store.dispatch("removePokemon", this.pokemon.uid);
       this.incrementCoins(20);
       this.hasSelled = true;
     },
@@ -364,7 +364,6 @@ export default {
       });
     }
 
-    console.log(this.pokeLS);
     let LastPokemon_LS = JSON.parse(localStorage.getItem("lastPokemon"));
 
     if (LastPokemon_LS === null || LastPokemon_LS === undefined) {

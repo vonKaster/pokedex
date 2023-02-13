@@ -161,7 +161,7 @@ export default {
     ...mapActions(['decrementCoins', 'incrementCoins']),
 
     sellPokemonOwned(uid) {
-      this.$store.dispatch("removePokemon", uid);
+      store.dispatch("removePokemon", uid);
       this.incrementCoins(20);
       this.filteredPokemonsOwned = this.pokemonsOwned;
     },
