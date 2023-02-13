@@ -9,7 +9,7 @@ export default new Vuex.Store({
     coins: Number(localStorage.getItem("coins")),
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
     lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
-    timer: JSON.parse(localStorage.getItem("timer")) || 30,
+    timer: JSON.parse(localStorage.getItem("timer")) || 10,
     pokeballs: JSON.parse(localStorage.getItem("pokeballs")) || {}
   },
   getters: {},
@@ -34,7 +34,19 @@ export default new Vuex.Store({
     updatePokeballs(state, pokeballs) {
       state.pokeballs = pokeballs;
       localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
-    }
+    },
+    buyPokeballs(state, newPokeballs) {
+      const pokeballs = state.pokeballs;
+      Object.keys(newPokeballs).forEach(key => {
+        if (pokeballs[key]) {
+          pokeballs[key] += newPokeballs[key];
+        } else {
+          pokeballs[key] = newPokeballs[key];
+        }
+      });
+      state.pokeballs = pokeballs;
+      localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
+    },
   },
   modules: {},
   watch: {

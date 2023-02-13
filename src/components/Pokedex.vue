@@ -19,12 +19,12 @@
             Atrapar
           </v-btn>
           <v-btn
-            color="red"
+            color="orange"
             text
             :disabled="hasSelled === true"
             @click="sellPokemonNotOwned()"
           >
-            Vender
+            permitir escape
           </v-btn>
         </v-card-actions>
       </div>
@@ -86,7 +86,6 @@ export default {
       hasPokemons: false,
       multiLine: true,
       snackbar: false,
-      hasPaided: false,
       textSnackBar: ``,
       pokemon: {
         uid: 1,
@@ -144,32 +143,24 @@ export default {
     ...mapMutations(["updateCoins", "updatePokeballs"]),
 
     startTimer() {
-      if (this.hasPaided === true) {
         this.OpenButtonDisabled = true;
         let countdown = setInterval(() => {
           this.setTimer(this.timer - 1);
           this.OpenButtonInfo = this.timer;
           if (this.OpenButtonInfo === 0) {
             clearInterval(countdown);
-            this.setTimer(30);
+            this.setTimer(10);
             this.OpenButtonDisabled = false;
             this.OpenButtonInfo = "Abrir";
-            this.hasPaided = false;
           }
         }, 1000);
 
         this.$once("hook:beforeDestroy", () => {
           clearInterval(countdown);
         });
-      }
-    },
+      },
 
     obtenerPokemon(id) {
-      if (this.coins >= 10) {
-        this.decrementCoins(10);
-        this.hasPaided = true;
-      }
-      if (this.hasPaided === true) {
         axios
           .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
           .then((response) => {
@@ -188,11 +179,6 @@ export default {
           .catch((error) => {
             this.pokemon.type = "No existe";
           });
-      } else {
-        this.textSnackBar = "¡No tenes suficientes monedas!";
-        this.snackbar = true;
-        this.hasPaided = false;
-      }
     },
     getRandomInt() {
       return Math.floor(Math.random() * 906);
@@ -266,9 +252,11 @@ export default {
     },
 
     async sellPokemonNotOwned() {
-      store.dispatch("removePokemon", this.pokemon.uid);
+      store.dispatch("removePokemon", this.pokemon.id);
       this.incrementCoins(20);
       this.hasSelled = true;
+      this.textSnackBar = `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}`;
+        this.snackbar = true;
     },
     saveLastPokemonRolled() {
       store.commit("updateLastPokemonRolled", {
@@ -345,17 +333,16 @@ export default {
     this.giveStartStuff();
     this.updateBalls();
 
-    if (this.timer <= 29) {
+    if (this.timer <= 9) {
       this.OpenButtonDisabled = true;
       let countdown = setInterval(() => {
         this.setTimer(this.timer - 1);
         this.OpenButtonInfo = this.timer;
         if (this.OpenButtonInfo === 0) {
           clearInterval(countdown);
-          this.setTimer(30);
+          this.setTimer(10);
           this.OpenButtonDisabled = false;
           this.OpenButtonInfo = "Abrir";
-          this.hasPaided = false;
         }
       }, 1000);
 

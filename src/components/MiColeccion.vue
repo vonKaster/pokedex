@@ -2,7 +2,7 @@
   <div class="container">
     <div class="container">
       <h2 v-if="!hasPokemons" class="text-center">
-        Aún no tienes ningún pokemon
+        No tenés ningún pokemon
       </h2>
 
       <v-text-field v-if="hasPokemons"
@@ -45,9 +45,9 @@
                     "
                     >{{ pokemon.name.toUpperCase() }}</span
                   >
-                  <v-btn color="primary" v-bind="attrs" v-on="on"
-                    ><v-icon color="black">mdi-pencil</v-icon></v-btn
-                  >
+                  <v-btn class="ma-2" v-bind="attrs" v-on="on" outlined small fab color="indigo">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
                 </div>
               </template>
 
@@ -161,8 +161,11 @@ export default {
     ...mapActions(['decrementCoins', 'incrementCoins']),
 
     sellPokemonOwned(uid) {
+      if (this.pokemonsOwned.length === 1) {
+        this.hasPokemons = false;
+      }
       store.dispatch("removePokemon", uid);
-      this.incrementCoins(20);
+      this.incrementCoins(100);
       this.filteredPokemonsOwned = this.pokemonsOwned;
     },
     updatePokemonName(uid, name) {

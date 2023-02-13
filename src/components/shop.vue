@@ -213,7 +213,7 @@ export default {
 
       if (this.coins >= quantity * price) {
         const newPokeballs = { [type]: quantity };
-        store.commit("updatePokeballs", newPokeballs);
+        store.commit("buyPokeballs", newPokeballs);
         this.decrementCoins(quantity * price);
         this.callSnackBar(true);
       } else {
