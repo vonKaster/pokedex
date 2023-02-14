@@ -159,22 +159,20 @@
         </v-card-actions>
       </div>
     </v-card>
-    <v-snackbar v-model="snackbar">
-      {{ textSnackBar }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Cerrar
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <v-snackbars bottom right :objects.sync="snackBarAlerts">
+      <template v-slot:action="{close}">
+    <v-btn text @click="close()">Cerrar</v-btn>
+  </template>
+    </v-snackbars>
   </div>
 </template>
 
 <script>
 import store from "@/store/index.js";
 import { mapState, mapActions } from "vuex";
+import VSnackbars from "v-snackbars";
 export default {
+  components: { "v-snackbars": VSnackbars },
   data() {
     return {
       pokeball: {
@@ -187,8 +185,7 @@ export default {
       quantitySuper: 0,
       quantityUltra: 0,
       quantityMaster: 0,
-      snackbar: false,
-      textSnackBar: ``,
+      snackBarAlerts: []
     };
   },
 
@@ -223,11 +220,18 @@ export default {
     },
 
     callSnackBar(success) {
-      this.snackbar = true;
       if (success === true) {
-        this.textSnackBar = `Compra realizada con éxito`;
+        this.snackBarAlerts.push({
+          message: `Compra realizada con éxito`,
+          color: "green",
+          timeout: 5000,
+        });
       } else {
-        this.textSnackBar = "¡No tenes suficientes monedas!";
+        this.snackBarAlerts.push({
+          message: `¡No tenés suficentes monedas!`,
+          color: "red",
+          timeout: 5000,
+        });
       }
     },
   },

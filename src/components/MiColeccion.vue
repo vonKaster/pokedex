@@ -15,10 +15,12 @@
         <v-card
           v-for="(pokemon, index) in paginatedPokemonsOwned"
           :key="index"
-          width="275px"
+          width="270px"
           class="ms-4 mb-4 .d-inline-block"
         >
-          <v-img text-center max-width="300" :src="pokemon.img"> </v-img>
+          <router-link :to="`/pokemon/${pokemon.uid}`">
+            <v-img text-center max-width="300" :src="pokemon.img" />
+          </router-link>
 
           <v-card-title>
             <v-dialog
@@ -102,16 +104,6 @@
             </v-dialog>
           </v-card-title>
 
-          <v-snackbar v-model="snackbar">
-            {{ textSnackBar }}
-
-            <template v-slot:action="{ attrs }">
-              <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-                Cerrar
-              </v-btn>
-            </template>
-          </v-snackbar>
-
           <v-card-text class="ms-4">ID: {{ pokemon.uid }}</v-card-text>
           <v-card-text class="ms-4"
             >Tipo: {{ pokemon.type.toUpperCase() }}</v-card-text
@@ -119,10 +111,11 @@
           <v-card-text class="ms-4">Número: {{ pokemon.id }}</v-card-text>
 
           <v-card-actions>
-            <router-link :to="`/pokemon/${pokemon.uid}`">
-              <v-btn color="purple" text> Perfil </v-btn>
-            </router-link>
-            <v-btn color="red" text @click="sellPokemonOwned(pokemon.uid)">
+            <v-btn
+              color="red"
+              text
+              @click="sellPokemonOwned(pokemon.uid, pokemon.name)"
+            >
               Vender
             </v-btn>
           </v-card-actions>
@@ -130,6 +123,11 @@
       </div>
       <v-pagination v-model="page" :length="pages"></v-pagination>
     </div>
+    <v-snackbars bottom right :objects.sync="snackBarAlerts">
+      <template v-slot:action="{ close }">
+        <v-btn text @click="close()">Cerrar</v-btn>
+      </template>
+    </v-snackbars>
   </div>
 </template>
 
@@ -137,10 +135,12 @@
 import store from "@/store/index.js";
 import { mapState, mapActions } from "vuex";
 import pokemonPage from "./pokemonPage.vue";
+import VSnackbars from "v-snackbars";
 export default {
   name: "coleccion",
   components: {
     pokemonPage,
+    "v-snackbars": VSnackbars
   },
 
   computed: {
@@ -160,14 +160,18 @@ export default {
       dialog: false,
       canClose: false,
       filteredPokemonsOwned: [],
-      snackbar: false,
-      textSnackBar: ``,
+      snackBarAlerts: []
     };
   },
   methods: {
     ...mapActions(["decrementCoins", "incrementCoins"]),
 
-    sellPokemonOwned(uid) {
+    sellPokemonOwned(uid, name) {
+      this.snackBarAlerts.push({
+          message: "Vendiste a: " + name.toUpperCase(),
+          color: "green",
+          timeout: 5000,
+        });
       if (this.pokemonsOwned.length === 1) {
         this.hasPokemons = false;
       }
@@ -188,8 +192,11 @@ export default {
           this.filterPokemons();
           this.newName = "";
         } else {
-          this.textSnackBar = "¡No tienes suficientes monedas!";
-          this.snackbar = true;
+          this.snackBarAlerts.push({
+          message: "¡No tienes suficientes monedas!",
+          color: "red",
+          timeout: 5000,
+        });
         }
       } else {
         console.log(this.canClose);

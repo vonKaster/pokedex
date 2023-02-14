@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar>
+    <v-toolbar fixed>
       <!-- Adjust the height to your needs, mine is 40 -->
       <img
         class="mr-4"
@@ -37,7 +37,7 @@ export default {
   },
 
   computed: {
-    ...mapState(['coins', 'pokeballs'])
+    ...mapState(['coins'])
   },
 
 };

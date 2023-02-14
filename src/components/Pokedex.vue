@@ -55,16 +55,11 @@
     <div class="mt-10">
       <v-btn @click="resetLocalStorage()">Resetear Local Storage</v-btn>
     </div>
-
-    <v-snackbar v-model="snackbar">
-      {{ textSnackBar }}
-
-      <template v-slot:action="{ attrs }">
-        <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-          Cerrar
-        </v-btn>
-      </template>
-    </v-snackbar>
+    <v-snackbars bottom right :objects.sync="snackBarAlerts">
+      <template v-slot:action="{close}">
+    <v-btn text @click="close()">Cerrar</v-btn>
+  </template>
+    </v-snackbars>
   </div>
 </template>
 
@@ -72,8 +67,10 @@
 import store from "@/store/index.js";
 import axios from "axios";
 import { mapState, mapActions, mapMutations } from "vuex";
+import VSnackbars from "v-snackbars";
 export default {
   name: "Pokedex",
+  components: { "v-snackbars": VSnackbars },
 
   data() {
     return {
@@ -85,8 +82,7 @@ export default {
       counter: "5",
       hasPokemons: false,
       multiLine: true,
-      snackbar: false,
-      textSnackBar: ``,
+      snackBarAlerts: [],
       pokemon: {
         uid: 1,
         id: 1,
@@ -143,43 +139,46 @@ export default {
     ...mapMutations(["updateCoins", "updatePokeballs"]),
 
     startTimer() {
-        this.OpenButtonDisabled = true;
-        let countdown = setInterval(() => {
-          this.setTimer(this.timer - 1);
-          this.OpenButtonInfo = this.timer;
-          if (this.OpenButtonInfo === 0) {
-            clearInterval(countdown);
-            this.setTimer(10);
-            this.OpenButtonDisabled = false;
-            this.OpenButtonInfo = "Abrir";
-          }
-        }, 1000);
-
-        this.$once("hook:beforeDestroy", () => {
+      this.OpenButtonDisabled = true;
+      let countdown = setInterval(() => {
+        this.setTimer(this.timer - 1);
+        this.OpenButtonInfo = this.timer;
+        if (this.OpenButtonInfo === 0) {
           clearInterval(countdown);
-        });
-      },
+          this.setTimer(10);
+          this.OpenButtonDisabled = false;
+          this.OpenButtonInfo = "Abrir";
+        }
+      }, 1000);
+
+      this.$once("hook:beforeDestroy", () => {
+        clearInterval(countdown);
+      });
+    },
 
     obtenerPokemon(id) {
-        axios
-          .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
-          .then((response) => {
-            this.pokemon.img = response.data.sprites.front_default;
-            this.pokemon.type = response.data.name;
-            this.pokemon.id = response.data.id;
-            this.pokemon.stats = response.data.stats;
-            this.pokemon.abilities = response.data.abilities;
-            this.pokemon.name = this.pokemon.type;
-            this.saveLastPokemonRolled();
-            this.hasSaved = false;
-            this.hasSelled = false;
-            localStorage.setItem("pokemonsOwned", JSON.stringify(this.pokemonsOwned));
-            localStorage.setItem("coins", this.coins);
-            localStorage.setItem("pokeballs", JSON.stringify(this.pokeballs));
-          })
-          .catch((error) => {
-            this.pokemon.type = "No existe";
-          });
+      axios
+        .get(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        .then((response) => {
+          this.pokemon.img = response.data.sprites.front_default;
+          this.pokemon.type = response.data.name;
+          this.pokemon.id = response.data.id;
+          this.pokemon.stats = response.data.stats;
+          this.pokemon.abilities = response.data.abilities;
+          this.pokemon.name = this.pokemon.type;
+          this.saveLastPokemonRolled();
+          this.hasSaved = false;
+          this.hasSelled = false;
+          localStorage.setItem(
+            "pokemonsOwned",
+            JSON.stringify(this.pokemonsOwned)
+          );
+          localStorage.setItem("coins", this.coins);
+          localStorage.setItem("pokeballs", JSON.stringify(this.pokeballs));
+        })
+        .catch((error) => {
+          this.pokemon.type = "No existe";
+        });
     },
     getRandomInt() {
       return Math.floor(Math.random() * 906);
@@ -211,25 +210,34 @@ export default {
       });
 
       if (!selectedBall) {
-        this.textSnackBar = "Selecciona una pokebola para atrapar al Pokémon";
-        this.snackbar = true;
+        this.snackBarAlerts.push({
+          message: "Selecciona una pokebola para atrapar al Pokémon",
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
 
       const localPokeballs = JSON.parse(localStorage.getItem("pokeballs"));
       if (!localPokeballs[selectedBall]) {
-        this.textSnackBar = `No tienes pokebolas ${selectedBall.toUpperCase()}`;
-        this.snackbar = true;
+        this.snackBarAlerts.push({
+          message: `No tienes pokebolas ${selectedBall.toUpperCase()}`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
 
       const caught = Math.random() < probability;
       if (!caught) {
-        this.textSnackBar = `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`;
         localPokeballs[selectedBall]--;
         localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
-        this.updateBalls();
-        this.snackbar = true;
+        this.updateBalls();   
+        this.snackBarAlerts.push({
+          message: `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`,
+          color: "red",
+          timeout: 5000,
+        });
         return;
       }
 
@@ -246,8 +254,11 @@ export default {
       localPokeballs[selectedBall]--;
       store.dispatch("setPokeballs", localPokeballs);
       this.updateBalls();
-      this.textSnackBar = `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`;
-      this.snackbar = true;
+      this.snackBarAlerts.push({
+          message: `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`,
+          color: "green",
+          timeout: 5000,
+        });
       this.hasSaved = true;
       this.hasSelled = true;
     },
@@ -256,8 +267,11 @@ export default {
       store.dispatch("removePokemon", this.pokemon.id);
       this.incrementCoins(20);
       this.hasSelled = true;
-      this.textSnackBar = `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}`;
-        this.snackbar = true;
+      this.snackBarAlerts.push({
+          message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}`,
+          color: "green",
+          timeout: 5000,
+        });
     },
     saveLastPokemonRolled() {
       store.commit("updateLastPokemonRolled", {
@@ -324,6 +338,7 @@ export default {
         },
       ];
     },
+
     resetLocalStorage() {
       localStorage.clear();
       location.reload();

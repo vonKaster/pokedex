@@ -12,6 +12,7 @@
     "axios": "^1.3.0",
     "core-js": "^3.8.3",
     "roboto-fontface": "*",
+    "v-snackbars": "^3.2.8",
     "vue": "^2.6.14",
     "vue-axios": "^3.5.2",
     "vue-router": "^3.5.1",

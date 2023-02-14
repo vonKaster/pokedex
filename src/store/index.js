@@ -47,6 +47,12 @@ export default new Vuex.Store({
       state.pokeballs = pokeballs;
       localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
     },
+    resetPokeballs(state) {
+      let pokeballs = state.pokeballs;
+      pokeballs = {normal:0, super:0, ultra:0, master:0}
+      state.pokeballs = pokeballs;
+      localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
+    },
   },
   modules: {},
   watch: {
