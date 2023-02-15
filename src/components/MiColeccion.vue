@@ -151,7 +151,7 @@ export default {
     return {
       pokemon: {},
       hasPokemons: false,
-      itemsPerPage: 6,
+      itemsPerPage: 12,
       page: 1,
       editedPokemonName: "",
       name: "",
@@ -239,19 +239,29 @@ export default {
     }
   },
   computed: {
-    ...mapState(["pokemonsOwned", "coins"]),
-    pages() {
-      return Math.ceil(this.pokemonsOwned.length / this.itemsPerPage);
-    },
-    paginatedPokemonsOwned() {
-      let start = (this.page - 1) * this.itemsPerPage;
-      let end = start + this.itemsPerPage;
-      return this.pokemonsOwned.slice(start, end);
-    },
-    paginatedPokemonsOwned() {
-      return this.filteredPokemonsOwned.slice(this.start, this.end);
-    },
+  ...mapState(["pokemonsOwned", "coins"]),
+
+  filteredPokemonsOwned() {
+    if (this.name.length > 0) {
+      return this.pokemonsOwned.filter(
+        (pokemon) =>
+          pokemon.name.includes(this.name) || pokemon.type.includes(this.name)
+      );
+    } else {
+      return this.pokemonsOwned;
+    }
   },
+
+  paginatedPokemonsOwned() {
+    const start = (this.page - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return this.filteredPokemonsOwned.slice(start, end);
+  },
+
+  pages() {
+    return Math.ceil(this.filteredPokemonsOwned.length / this.itemsPerPage);
+  },
+},
   mounted() {
     this.filteredPokemonsOwned = this.pokemonsOwned;
   },

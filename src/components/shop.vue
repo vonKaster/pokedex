@@ -131,7 +131,7 @@
             <v-card-actions>
               <v-btn
                 :disabled="quantityUltra === 0"
-                color="green"
+                color="success"
                 width="100%"
                 @click="addPokeball('ultra', quantityUltra)"
                 class="mx-auto"
@@ -178,7 +178,7 @@
             <v-card-actions>
               <v-btn
                 :disabled="quantityMaster === 0"
-                color="sucess"
+                color="success"
                 width="100%"
                 @click="addPokeball('master', quantityMaster)"
                 class="mx-auto"
