@@ -234,7 +234,7 @@ export default {
       const caught = Math.random() < probability;
       if (!caught) {
         localPokeballs[selectedBall]--;
-        store.dispatch("setPokeballs", localPokeballs);
+        localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
         this.updateBalls();
         this.snackBarAlerts.push({
           message: `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`,
@@ -245,7 +245,7 @@ export default {
       }
 
       store.dispatch("addPokemon", {
-        uid: this.pokemonsOwned.length + 1,
+        uid: (this.pokemonsOwned[this.pokemonsOwned.length - 1]?.uid + 1) || 1,
         id: this.pokemon.id,
         name: this.pokemon.name,
         type: this.pokemon.type,
