@@ -70,6 +70,9 @@
                         (v) =>
                           v.length >= 3 ||
                           'El nombre debe tener al menos 3 caracteres',
+                        (v) =>
+                          v.length < 13 ||
+                          'El nombre puede contener como máximo 12 caracteres',
                       ]"
                       outlined
                       class="ma-auto"
@@ -224,7 +227,7 @@ export default {
       }
     },
     updatePokemonName(uid, name) {
-      if (name.length >= 3) {
+      if (name.length >= 3 && name.length < 13) {
         if (this.coins >= 20) {
           let pokemon = this.pokemonsOwned.find(
             (pokemon) => pokemon.uid === uid
@@ -233,17 +236,21 @@ export default {
           store.dispatch("editPokemon", { uid, name });
           this.decrementCoins(20);
           this.canClose = true;
-          this.newName = null;
+          this.filterPokemons();
+          this.newName = "";
         } else {
           this.snackBarAlerts.push({
-          message: "¡No tenés suficentes monedas!",
-          color: "red",
-          timeout: 5000,
-        });
+            message: "¡No tienes suficientes monedas!",
+            color: "red",
+            timeout: 5000,
+          });
         }
-      } else {
+      } else if (name.length < 3) {
         this.canClose = false;
         this.nameError = ["El nombre debe tener al menos 3 caracteres"];
+      } else if (name.length > 13) {
+        this.canClose = false;
+        this.nameError = ["El nombre debe tener como máximo 12 caracteres"];
       }
     },
 

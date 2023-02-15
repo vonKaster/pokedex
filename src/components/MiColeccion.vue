@@ -83,6 +83,9 @@
                       (v) =>
                         v.length >= 3 ||
                         'El nombre debe tener al menos 3 caracteres',
+                      (v) =>
+                        v.length < 13 ||
+                        'El nombre puede contener como máximo 12 caracteres',
                     ]"
                     outlined
                     class="ma-auto"
@@ -180,7 +183,7 @@ export default {
       this.filteredPokemonsOwned = this.pokemonsOwned;
     },
     updatePokemonName(uid, name) {
-      if (name.length >= 3) {
+      if (name.length >= 3 && name.length < 13) {
         if (this.coins >= 20) {
           let pokemon = this.pokemonsOwned.find(
             (pokemon) => pokemon.uid === uid
@@ -198,10 +201,12 @@ export default {
             timeout: 5000,
           });
         }
-      } else {
-        console.log(this.canClose);
+      } else if (name.length < 3) {
         this.canClose = false;
         this.nameError = ["El nombre debe tener al menos 3 caracteres"];
+      } else if (name.length > 13) {
+        this.canClose = false;
+        this.nameError = ["El nombre debe tener como máximo 12 caracteres"];
       }
     },
 
@@ -239,29 +244,29 @@ export default {
     }
   },
   computed: {
-  ...mapState(["pokemonsOwned", "coins"]),
+    ...mapState(["pokemonsOwned", "coins"]),
 
-  filteredPokemonsOwned() {
-    if (this.name.length > 0) {
-      return this.pokemonsOwned.filter(
-        (pokemon) =>
-          pokemon.name.includes(this.name) || pokemon.type.includes(this.name)
-      );
-    } else {
-      return this.pokemonsOwned;
-    }
-  },
+    filteredPokemonsOwned() {
+      if (this.name.length > 0) {
+        return this.pokemonsOwned.filter(
+          (pokemon) =>
+            pokemon.name.includes(this.name) || pokemon.type.includes(this.name)
+        );
+      } else {
+        return this.pokemonsOwned;
+      }
+    },
 
-  paginatedPokemonsOwned() {
-    const start = (this.page - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredPokemonsOwned.slice(start, end);
-  },
+    paginatedPokemonsOwned() {
+      const start = (this.page - 1) * this.itemsPerPage;
+      const end = start + this.itemsPerPage;
+      return this.filteredPokemonsOwned.slice(start, end);
+    },
 
-  pages() {
-    return Math.ceil(this.filteredPokemonsOwned.length / this.itemsPerPage);
+    pages() {
+      return Math.ceil(this.filteredPokemonsOwned.length / this.itemsPerPage);
+    },
   },
-},
   mounted() {
     this.filteredPokemonsOwned = this.pokemonsOwned;
   },
