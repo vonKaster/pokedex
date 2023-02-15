@@ -226,6 +226,7 @@ export default {
   },
 
   created: function () {
+    document.title = "Pokédex | Colección";
     let hasPokemons = JSON.parse(localStorage.getItem("pokemonsOwned"));
     if (
       hasPokemons === null ||

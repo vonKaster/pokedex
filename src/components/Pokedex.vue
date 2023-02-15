@@ -71,6 +71,10 @@ export default {
   name: "Pokedex",
   components: { "v-snackbars": VSnackbars },
 
+  created(){
+    document.title = "Pokédex | Inicio"
+  },
+
   data() {
     return {
       OpenButtonDisabled: false,

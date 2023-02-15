@@ -135,6 +135,11 @@
 import store from "@/store/index.js";
 import { mapState, mapActions } from "vuex";
 export default {
+
+  created() {
+    document.title = "Pokédex | Admin Panel"
+  },
+
   data() {
     return {
       password: "",

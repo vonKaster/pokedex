@@ -204,6 +204,11 @@ import { mapState, mapActions } from "vuex";
 import VSnackbars from "v-snackbars";
 export default {
   components: { "v-snackbars": VSnackbars },
+
+  created() {
+    document.title = "Pokédex | Tienda";
+  },
+
   data() {
     return {
       pokeball: {
