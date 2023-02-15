@@ -271,7 +271,7 @@ export default {
       this.incrementCoins(20);
       this.hasSelled = true;
       this.snackBarAlerts.push({
-        message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}!`,
+        message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}! | [+20 Pokemonedas]`,
         color: "green",
         timeout: 5000,
       });

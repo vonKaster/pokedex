@@ -162,15 +162,11 @@
           </v-col>
         </v-row>
       </v-container>
-      <v-snackbar v-model="snackbar">
-        {{ textSnackBar }}
-
-        <template v-slot:action="{ attrs }">
-          <v-btn color="red" text v-bind="attrs" @click="snackbar = false">
-            Cerrar
-          </v-btn>
+      <v-snackbars bottom right :objects.sync="snackBarAlerts">
+        <template v-slot:action="{ close }">
+          <v-btn text @click="close()">Cerrar</v-btn>
         </template>
-      </v-snackbar>
+      </v-snackbars>
     </div>
   </div>
 </template>
@@ -179,8 +175,10 @@
 import store from "@/store/index.js";
 import { mapActions, mapState } from "vuex";
 import axios from "axios";
+import VSnackbars from "v-snackbars";
 export default {
   name: "pokemonPage",
+  components: { "v-snackbars": VSnackbars },
   computed: {
     ...mapState(["pokemonsOwned", "coins"]),
   },
@@ -189,8 +187,7 @@ export default {
       pokemon: null,
       colors: ["red", "orange", "yellow", "green", "blue", "purple"],
       abilities: [],
-      snackbar: false,
-      textSnackBar: ``,
+      snackBarAlerts: [],
       canClose: false,
       newName: "",
       nameError: [],
@@ -238,8 +235,11 @@ export default {
           this.canClose = true;
           this.newName = null;
         } else {
-          this.textSnackBar = "¡No tienes suficientes monedas!";
-          this.snackbar = true;
+          this.snackBarAlerts.push({
+          message: "¡No tenés suficentes monedas!",
+          color: "red",
+          timeout: 5000,
+        });
         }
       } else {
         this.canClose = false;

@@ -258,7 +258,7 @@ export default {
     callSnackBar(success) {
       if (success === true) {
         this.snackBarAlerts.push({
-          message: `Compra realizada con éxito`,
+          message: `¡Compra realizada con éxito!`,
           color: "green",
           timeout: 5000,
         });

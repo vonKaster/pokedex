@@ -168,7 +168,7 @@ export default {
 
     sellPokemonOwned(uid, name) {
       this.snackBarAlerts.push({
-        message: "Vendiste a: " + name.toUpperCase(),
+        message: "Vendiste a: " + name.toUpperCase() + " | [+100 Pokemonedas]",
         color: "green",
         timeout: 5000,
       });
