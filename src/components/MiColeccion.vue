@@ -151,7 +151,7 @@ export default {
     return {
       pokemon: {},
       hasPokemons: false,
-      itemsPerPage: 14,
+      itemsPerPage: 6,
       page: 1,
       editedPokemonName: "",
       name: "",
