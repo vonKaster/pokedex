@@ -7,6 +7,11 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
+    redirect: 'inicio',
+    component: PokedexView
+  },
+  {
+    path: '/inicio',
     name: 'home',
     component: PokedexView
   },

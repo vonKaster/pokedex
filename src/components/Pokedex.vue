@@ -1,7 +1,7 @@
 <template>
   <div class="container text-center">
-    <v-card class="mx-auto" max-width="300px">
-      <v-img text-center max-width="300" class="" :src="pokemon.img"> </v-img>
+    <v-card class="mx-auto" max-width="350px">
+      <v-img text-center max-width="350" class="" :src="pokemon.img"> </v-img>
 
       <div>
         <v-card-title>{{ pokemon.type.toUpperCase() }}</v-card-title>
@@ -44,17 +44,16 @@
     </div>
 
     <v-btn
+      color="indigo"
+      large
       :disabled="OpenButtonDisabled"
       @click="
         obtenerPokemon(getRandomInt());
         startTimer();
       "
-      class="mt-4"
+      class="mt-4 white--text"
       >{{ OpenButtonInfo }}</v-btn
     >
-    <div class="mt-10">
-      <v-btn @click="resetLocalStorage()">Resetear Local Storage</v-btn>
-    </div>
     <v-snackbars bottom right :objects.sync="snackBarAlerts">
       <template v-slot:action="{close}">
     <v-btn text @click="close()">Cerrar</v-btn>
@@ -268,7 +267,7 @@ export default {
       this.incrementCoins(20);
       this.hasSelled = true;
       this.snackBarAlerts.push({
-          message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}`,
+          message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}!`,
           color: "green",
           timeout: 5000,
         });
@@ -338,11 +337,6 @@ export default {
         },
       ];
     },
-
-    resetLocalStorage() {
-      localStorage.clear();
-      location.reload();
-    },
   },
 
   mounted() {
@@ -398,4 +392,5 @@ export default {
   opacity: 0.5;
   filter: grayscale(100%);
 }
+
 </style>

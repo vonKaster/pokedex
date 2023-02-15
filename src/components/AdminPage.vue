@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="centered-container">
-      <v-form v-if="!isAuthenticated" @submit.prevent="submitPassword">
+    <v-row class="justify-center">
+      <v-form class="mt-10" v-if="!isAuthenticated" @submit.prevent="submitPassword">
         <v-text-field
           outlined
           id="password-input"
@@ -13,104 +13,116 @@
         ></v-text-field>
       </v-form>
       <div class="" v-if="isAuthenticated">
-        <v-card class="mx-auto" max-width="300px">
-          <v-img
-            text-center
-            max-width="300"
-            class=""
-            src="../assets/img/pokecoins.png"
-          >
-          </v-img>
+        <v-col cols="12" md="6">
+          <v-card min-width="300" class="mx-auto mt-5">
+            <v-img
+              text-center
+              max-width="300"
+              class=""
+              src="../assets/img/pokecoins.png"
+            >
+            </v-img>
 
-          <div>
-            <v-card-title>Monedas</v-card-title>
-            <v-text-field
-              v-model="amountCoins"
-              outlined
-              label="Cantidad"
-              color="dark"
-              class="card-textfield ms-4 p-0"
-              type="number"
-              @input="handleInput"
-            ></v-text-field>
-            <v-card-actions>
-              <v-btn
-                color="green"
-                text
-                :disabled="
-                  amountCoins === null ||
-                  amountCoins === 0 ||
-                  isNaN(amountCoins)
-                "
-                @click="addCoins()"
-              >
-                Obtener
-              </v-btn>
-              <v-btn color="red" text @click="resetCoins()"> resetear </v-btn>
-            </v-card-actions>
-          </div>
-        </v-card>
+            <div>
+              <v-card-title>Monedas</v-card-title>
+              <v-text-field
+                v-model="amountCoins"
+                outlined
+                label="Cantidad"
+                color="dark"
+                class="card-textfield ms-4 p-0"
+                type="number"
+                @input="handleInput"
+              ></v-text-field>
+              <v-card-actions>
+                <v-btn
+                  color="green"
+                  text
+                  :disabled="
+                    amountCoins === null ||
+                    amountCoins === 0 ||
+                    isNaN(amountCoins)
+                  "
+                  @click="addCoins()"
+                >
+                  Obtener
+                </v-btn>
+                <v-btn color="red" text @click="resetCoins()"> resetear </v-btn>
+              </v-card-actions>
+            </div>
+          </v-card>
+        </v-col>
       </div>
       <div v-if="isAuthenticated">
-        <v-card class="mx-auto ms-6" max-width="300px">
-          <v-img
-            text-center
-            max-width="300"
-            class=""
-            src="../assets/img/pokeball_sell.png"
-          >
-          </v-img>
+        <v-col cols="12" md="6">
+          <v-card min-width="300" class="mx-auto mt-5">
+            <v-img
+              text-center
+              max-width="300"
+              class=""
+              src="../assets/img/pokeball_sell.png"
+            >
+            </v-img>
 
-          <div>
-            <v-card-title>Pokeballs</v-card-title>
-            <v-select
-              v-model="pokeballSelected"
-              :items="items"
-              outlined
-              label="Tipo"
-              required
-              class="mx-auto"
-            ></v-select>
-            <v-text-field
-              v-model="amountPokeballs"
-              outlined
-              label="Cantidad"
-              color="dark"
-              class="card-textfield ms-4 p-0"
-              type="number"
-              @input="handleInput"
-            ></v-text-field>
-            <div class="d-flex justify-center">
-              <div v-for="ball in balls" :key="ball.name">
-                <h4 class="ms-6">{{ ball.amount }}</h4>
-                <v-img
-                  :src="ball.src"
-                  max-width="50px"
-                  @click="selectBall(ball)"
-                  :class="{ selected: ball.selected }"
-                  class="ms-3"
-                />
+            <div>
+              <v-card-title>Pokeballs</v-card-title>
+              <v-select
+                v-model="pokeballSelected"
+                :items="items"
+                outlined
+                label="Tipo"
+                required
+                class="mx-auto"
+              ></v-select>
+              <v-text-field
+                v-model="amountPokeballs"
+                outlined
+                label="Cantidad"
+                color="dark"
+                class="card-textfield ms-4 p-0"
+                type="number"
+                @input="handleInput"
+              ></v-text-field>
+              <div class="d-flex justify-center">
+                <div v-for="ball in balls" :key="ball.name">
+                  <h4 class="ms-6">{{ ball.amount }}</h4>
+                  <v-img
+                    :src="ball.src"
+                    max-width="50px"
+                    @click="selectBall(ball)"
+                    :class="{ selected: ball.selected }"
+                    class="ms-3"
+                  />
+                </div>
               </div>
+              <v-card-actions>
+                <v-btn
+                  color="green"
+                  text
+                  :disabled="
+                    pokeballSelected === null ||
+                    amountPokeballs === null ||
+                    amountPokeballs === 0 ||
+                    isNaN(amountPokeballs)
+                  "
+                  @click="addPokeball(pokeballSelected, amountPokeballs)"
+                >
+                  Obtener
+                </v-btn>
+                <v-btn color="red" text @click="resetPokeballs()">
+                  resetear
+                </v-btn>
+              </v-card-actions>
             </div>
-            <v-card-actions>
-              <v-btn
-                color="green"
-                text
-                :disabled="
-                  pokeballSelected === null ||
-                  amountPokeballs === null ||
-                  amountPokeballs === 0 ||
-                  isNaN(amountPokeballs)
-                "
-                @click="addPokeball(pokeballSelected, amountPokeballs)"
-              >
-                Obtener
-              </v-btn>
-              <v-btn color="red" text @click="resetPokeballs()"> resetear </v-btn>
-            </v-card-actions>
-          </div>
-        </v-card>
+          </v-card>
+        </v-col>
       </div>
+    </v-row>
+
+    <div v-if="isAuthenticated" class="text-center mb-10 mt-8">
+      <v-btn class="pa-2" color="error" @click="resetLocalStorage()"
+        >Resetear Local Storage</v-btn
+      >
     </div>
   </div>
 </template>
@@ -211,9 +223,9 @@ export default {
       this.updateBalls();
     },
 
-    resetPokeballs(){
-        store.commit("resetPokeballs");
-        this.updateBalls();
+    resetPokeballs() {
+      store.commit("resetPokeballs");
+      this.updateBalls();
     },
 
     updateBalls() {
@@ -245,6 +257,11 @@ export default {
         },
       ];
     },
+
+    resetLocalStorage() {
+      localStorage.clear();
+      location.reload();
+    },
   },
 
   mounted() {
@@ -254,15 +271,6 @@ export default {
 </script>
 
 <style>
-.centered-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-
-}
-
-
 .login-textfield {
   width: 200px;
 }

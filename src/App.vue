@@ -4,6 +4,7 @@
     <v-main>
       <router-view/>
     </v-main>
+    <Footer></Footer>
   </v-app>
 </template>
 
@@ -11,12 +12,14 @@
 import Pokedex from "./components/Pokedex.vue";
 import navBar from "./components/navBar.vue"
 import MiColeccion from "./components/MiColeccion.vue";
+import Footer from './components/footer.vue';
 export default {
   name: "App",
   components: {
     Pokedex,
     navBar,
-    MiColeccion
+    MiColeccion,
+    Footer
 },
 
   data: () => ({

@@ -49,12 +49,12 @@
 
               <template v-slot:default="dialog">
                 <v-card>
-                  <v-toolbar color="warning" dark
+                  <v-toolbar color="blue" dark
                     >¡Cambia el nombre de
                     {{ pokemon.name.toUpperCase() }}!</v-toolbar
                   >
                   <v-card-text>
-                    <div class="text-h6 pa-12 text-center">
+                    <div class="text-h6 pa-6 text-center">
                       Necesitarás 20 monedas para realizar el cambio
                     </div>
                   </v-card-text>
@@ -112,44 +112,32 @@
           <br />
         </v-card>
       </div>
-      <div class="d-flex justify-center">
-        <v-card
-          v-for="(stat, index) in pokemon.stats"
-          :key="index"
-          :style="{
-            width: '180px',
-            height: '110px',
-            margin: '5px',
-          }"
-        >
-          <v-icon
-            class="d-flex justify-center mt-2"
-            :size="50"
-            :color="colors[index]"
-            >{{ icons[index] }}</v-icon
-          >
-          <h4 class="text-center mt-2">
-            {{ stat.stat.name.toUpperCase() }}: {{ stat.base_stat }}
-          </h4>
-        </v-card>
-      </div>
-    </div>
-    <div class="d-flex justify-center">
-      <v-card
-        v-for="(ability, index) in abilities"
-        :key="index"
-        :style="{
-          width: '400px',
-          height: '160px',
-          margin: '5px',
-        }"
-      >
-        <v-icon class="d-flex justify-center mt-2" :size="50" color="indigo"
-          >mdi-star-four-points-outline mdi-rotate-45</v-icon
-        >
-        <h2 class="text-center">{{ getName(ability) }}</h2>
-        <p class="text-center">{{ getDescription(ability) }}</p>
+      <v-container fluid>
+  <v-row justify="center">
+    <v-col cols="12" sm="6" md="4" v-for="(stat, index) in pokemon.stats" :key="index">
+      <v-card class="mx-auto" :style="{ width: '50%', margin: '5px' }">
+        <v-icon class="d-flex justify-center mt-2" :size="50" :color="colors[index]">
+          {{ icons[index] }}
+        </v-icon>
+        <h4 class="text-center mt-2">
+          {{ stat.stat.name.toUpperCase() }}: {{ stat.base_stat }}
+        </h4>
       </v-card>
+    </v-col>
+  </v-row>
+  <v-row justify="center">
+    <v-col cols="12" sm="6" md="4" v-for="(ability, index) in abilities" :key="index">
+      <v-card class="mx-auto" :style="{ width: '75%', margin: '5px' }">
+        <v-icon class="d-flex justify-center mt-2" :size="50" color="indigo">
+          mdi-star-four-points-outline mdi-rotate-45
+        </v-icon>
+        <h2 class="text-center pa-2">{{ getName(ability) }}</h2>
+        <p class="text-center pa-2">{{ getDescription(ability) }}</p>
+      </v-card>
+    </v-col>
+  </v-row>
+</v-container>
+
     </div>
   </div>
 </template>

@@ -15,8 +15,11 @@
         <v-card
           v-for="(pokemon, index) in paginatedPokemonsOwned"
           :key="index"
-          width="270px"
-          class="ms-4 mb-4 .d-inline-block"
+          :width="$vuetify.breakpoint.smAndDown ? '80%' : '270px'"
+          :class="{
+            'mx-auto mb-4 .d-inline-block': $vuetify.breakpoint.smAndDown,
+            'ms-4 mb-4 .d-inline-block': !$vuetify.breakpoint.smAndDown,
+          }"
         >
           <router-link :to="`/pokemon/${pokemon.uid}`">
             <v-img text-center max-width="300" :src="pokemon.img" />
@@ -62,12 +65,12 @@
 
               <template v-slot:default="dialog">
                 <v-card>
-                  <v-toolbar color="warning" dark
+                  <v-toolbar color="blue" dark
                     >¡Cambia el nombre de
                     {{ pokemon.name.toUpperCase() }}!</v-toolbar
                   >
                   <v-card-text>
-                    <div class="text-h6 pa-12 text-center">
+                    <div class="text-h6 pa-6 text-center text--black">
                       Necesitarás 20 monedas para realizar el cambio
                     </div>
                   </v-card-text>
@@ -140,7 +143,7 @@ export default {
   name: "coleccion",
   components: {
     pokemonPage,
-    "v-snackbars": VSnackbars
+    "v-snackbars": VSnackbars,
   },
 
   computed: {
@@ -160,7 +163,7 @@ export default {
       dialog: false,
       canClose: false,
       filteredPokemonsOwned: [],
-      snackBarAlerts: []
+      snackBarAlerts: [],
     };
   },
   methods: {
@@ -168,10 +171,10 @@ export default {
 
     sellPokemonOwned(uid, name) {
       this.snackBarAlerts.push({
-          message: "Vendiste a: " + name.toUpperCase(),
-          color: "green",
-          timeout: 5000,
-        });
+        message: "Vendiste a: " + name.toUpperCase(),
+        color: "green",
+        timeout: 5000,
+      });
       if (this.pokemonsOwned.length === 1) {
         this.hasPokemons = false;
       }
@@ -193,10 +196,10 @@ export default {
           this.newName = "";
         } else {
           this.snackBarAlerts.push({
-          message: "¡No tienes suficientes monedas!",
-          color: "red",
-          timeout: 5000,
-        });
+            message: "¡No tienes suficientes monedas!",
+            color: "red",
+            timeout: 5000,
+          });
         }
       } else {
         console.log(this.canClose);

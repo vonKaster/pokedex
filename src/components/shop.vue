@@ -1,5 +1,7 @@
 <template>
-  <div class="container text-center d-flex">
+  <div class="container text-center d-flex align-center">
+    <v-row justify="center">
+    <v-col cols="12" sm="6" md="4" lg="3">
     <v-card class="mx-auto" max-width="300px">
       <v-img text-center max-width="300" src="../assets/img/pokeball_sell.png">
       </v-img>
@@ -38,7 +40,9 @@
         </v-card-actions>
       </div>
     </v-card>
+  </v-col>
 
+  <v-col cols="12" sm="6" md="4" lg="3">
     <v-card class="mx-auto" max-width="300px">
       <v-img text-center max-width="300" src="../assets/img/superball_sell.png">
       </v-img>
@@ -77,7 +81,9 @@
         </v-card-actions>
       </div>
     </v-card>
+  </v-col>
 
+  <v-col cols="12" sm="6" md="4" lg="3">
     <v-card class="mx-auto" max-width="300px">
       <v-img text-center max-width="300" src="../assets/img/ultraball_sell.png">
       </v-img>
@@ -116,7 +122,9 @@
         </v-card-actions>
       </div>
     </v-card>
+  </v-col>
 
+  <v-col cols="12" sm="6" md="4" lg="3">
     <v-card class="mx-auto" max-width="300px">
       <v-img
         text-center
@@ -159,6 +167,8 @@
         </v-card-actions>
       </div>
     </v-card>
+  </v-col>
+</v-row>
     <v-snackbars bottom right :objects.sync="snackBarAlerts">
       <template v-slot:action="{close}">
     <v-btn text @click="close()">Cerrar</v-btn>
