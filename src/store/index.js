@@ -10,7 +10,7 @@ export default new Vuex.Store({
     pokemonsOwned: JSON.parse(localStorage.getItem("pokemonsOwned")) || [],
     lastPokemonRolled: JSON.parse(localStorage.getItem("lastPokemon")) || {},
     timer: JSON.parse(localStorage.getItem("timer")) || 10,
-    pokeballs: JSON.parse(localStorage.getItem("pokeballs")) || {}
+    pokeballs: JSON.parse(localStorage.getItem("pokeballs")) || {},
   },
   getters: {},
   mutations: {
@@ -37,7 +37,7 @@ export default new Vuex.Store({
     },
     buyPokeballs(state, newPokeballs) {
       const pokeballs = state.pokeballs;
-      Object.keys(newPokeballs).forEach(key => {
+      Object.keys(newPokeballs).forEach((key) => {
         if (pokeballs[key]) {
           pokeballs[key] += newPokeballs[key];
         } else {
@@ -49,7 +49,7 @@ export default new Vuex.Store({
     },
     resetPokeballs(state) {
       let pokeballs = state.pokeballs;
-      pokeballs = {normal:0, super:0, ultra:0, master:0}
+      pokeballs = { normal: 0, super: 0, ultra: 0, master: 0 };
       state.pokeballs = pokeballs;
       localStorage.setItem("pokeballs", JSON.stringify(pokeballs));
     },
@@ -97,7 +97,7 @@ export default new Vuex.Store({
     },
     setPokeballs({ commit }, pokeballs) {
       commit("updatePokeballs", pokeballs);
-    }
+    },
   },
   getters: {
     getTimer(state) {

@@ -55,9 +55,9 @@
       >{{ OpenButtonInfo }}</v-btn
     >
     <v-snackbars bottom right :objects.sync="snackBarAlerts">
-      <template v-slot:action="{close}">
-    <v-btn text @click="close()">Cerrar</v-btn>
-  </template>
+      <template v-slot:action="{ close }">
+        <v-btn text @click="close()">Cerrar</v-btn>
+      </template>
     </v-snackbars>
   </div>
 </template>
@@ -231,7 +231,7 @@ export default {
       if (!caught) {
         localPokeballs[selectedBall]--;
         localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
-        this.updateBalls();   
+        this.updateBalls();
         this.snackBarAlerts.push({
           message: `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`,
           color: "red",
@@ -254,10 +254,10 @@ export default {
       store.dispatch("setPokeballs", localPokeballs);
       this.updateBalls();
       this.snackBarAlerts.push({
-          message: `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`,
-          color: "green",
-          timeout: 5000,
-        });
+        message: `Felicidades, atrapaste a ${this.pokemon.name.toUpperCase()} con una pokebola ${selectedBall.toUpperCase()}`,
+        color: "green",
+        timeout: 5000,
+      });
       this.hasSaved = true;
       this.hasSelled = true;
     },
@@ -267,10 +267,10 @@ export default {
       this.incrementCoins(20);
       this.hasSelled = true;
       this.snackBarAlerts.push({
-          message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}!`,
-          color: "green",
-          timeout: 5000,
-        });
+        message: `¡Dejaste Escapar a un ${this.pokemon.name.toUpperCase()}!`,
+        color: "green",
+        timeout: 5000,
+      });
     },
     saveLastPokemonRolled() {
       store.commit("updateLastPokemonRolled", {
@@ -392,5 +392,4 @@ export default {
   opacity: 0.5;
   filter: grayscale(100%);
 }
-
 </style>

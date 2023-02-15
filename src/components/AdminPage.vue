@@ -1,7 +1,11 @@
 <template>
   <div>
     <v-row class="justify-center">
-      <v-form class="mt-10" v-if="!isAuthenticated" @submit.prevent="submitPassword">
+      <v-form
+        class="mt-10"
+        v-if="!isAuthenticated"
+        @submit.prevent="submitPassword"
+      >
         <v-text-field
           outlined
           id="password-input"

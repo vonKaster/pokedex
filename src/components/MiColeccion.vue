@@ -24,6 +24,7 @@
           <router-link :to="`/pokemon/${pokemon.uid}`">
             <v-img text-center max-width="300" :src="pokemon.img" />
           </router-link>
+          <v-divider />
 
           <v-card-title>
             <v-dialog
@@ -41,13 +42,8 @@
                   "
                 >
                   <span
-                    style="
-                      flex: 1;
-                      overflow: hidden;
-                      text-overflow: ellipsis;
-                      white-space: nowrap;
-                    "
-                    >{{ pokemon.name.toUpperCase() }}</span
+                    style="font-family: 'Merienda', cursive; font-size: 24px"
+                    >{{ pokemon.name }}</span
                   >
                   <v-btn
                     class="ma-2"
@@ -65,7 +61,7 @@
 
               <template v-slot:default="dialog">
                 <v-card>
-                  <v-toolbar color="blue" dark
+                  <v-toolbar color="indigo" dark
                     >¡Cambia el nombre de
                     {{ pokemon.name.toUpperCase() }}!</v-toolbar
                   >
@@ -115,9 +111,10 @@
 
           <v-card-actions>
             <v-btn
-              color="red"
-              text
+              color="error"
+              width="100%"
               @click="sellPokemonOwned(pokemon.uid, pokemon.name)"
+              class="mx-auto mt-2"
             >
               Vender
             </v-btn>
@@ -259,6 +256,10 @@ export default {
   },
 };
 </script>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Merienda:wght@700&display=swap");
+</style>
 
 <style>
 .search {
