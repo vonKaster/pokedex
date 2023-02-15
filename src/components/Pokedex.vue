@@ -4,7 +4,7 @@
       <v-img text-center max-width="350" class="" :src="pokemon.img"> </v-img>
 
       <div>
-        <v-card-title>{{ pokemon.type.toUpperCase() }}</v-card-title>
+        <v-card-title style="font-family: 'Merienda', cursive; font-size: 24px">{{ pokemon.type.toUpperCase() }}</v-card-title>
         <v-card-text class="pb-0 text-left ms-4"
           >Número: {{ pokemon.id }}
         </v-card-text>
@@ -234,7 +234,7 @@ export default {
       const caught = Math.random() < probability;
       if (!caught) {
         localPokeballs[selectedBall]--;
-        localStorage.setItem("pokeballs", JSON.stringify(localPokeballs));
+        store.dispatch("setPokeballs", localPokeballs);
         this.updateBalls();
         this.snackBarAlerts.push({
           message: `No pudiste atrapar a ${this.pokemon.name.toUpperCase()} con la pokebola ${selectedBall.toUpperCase()}`,
@@ -385,6 +385,10 @@ export default {
   },
 };
 </script>
+
+<style>
+@import url("https://fonts.googleapis.com/css2?family=Merienda:wght@700&display=swap");
+</style>
 
 <style>
 .selected {
