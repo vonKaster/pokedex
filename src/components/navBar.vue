@@ -43,6 +43,11 @@
             :to="{ name: 'tienda' }"
             >Tienda</v-list-item
           >
+          <v-list-item
+            class="px-5 white--text font-weight-bold"
+            :to="{ name: 'admin' }"
+            >Admin Panel</v-list-item
+          >
         </v-list>
       </v-menu>
       <v-toolbar-items v-if="!showMenu && $vuetify.breakpoint.mdAndUp">
@@ -51,6 +56,7 @@
           >Colección</v-btn
         >
         <v-btn class="white--text" text :to="{ name: 'tienda' }">Tienda</v-btn>
+        <v-btn class="white--text" text :to="{ name: 'admin' }">Admin Panel</v-btn>
       </v-toolbar-items>
     </v-app-bar>
   </div>
